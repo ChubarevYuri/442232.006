@@ -54,10 +54,6 @@
     <NoConfig>true</NoConfig>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DeviseTextBox, Version=1.0.8223.17831, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\TPA\Components\DeviseTextBox\DeviseTextBox\bin\Release\DeviseTextBox.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -92,7 +88,7 @@
     </Compile>
     <Compile Include="Report.vb" />
     <Compile Include="Test.vb" />
-    <Compile Include="Values.vb" />
+    <Compile Include="Base.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -113,7 +109,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="property\setting.ini" />
+    <None Include="property\setting.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.VisualBasic.targets" />
   <ProjectExtensions>

@@ -1,4 +1,4 @@
-﻿Module Servise
+﻿Public Module Servise
     ''' <summary>
     ''' Окно Сервис
     '''     Работа с историей протоколов
@@ -13,14 +13,16 @@
             Case val(0)
                 SelectReport(val(0))
             Case val(1)
-                Test.user = TPA.DialogForms.Selection(Values.users.Read(), val(1))
+                UserSelect()
             Case val(2)
-                Test.device = TPA.DialogForms.Selection(Values.devices.Read(), val(2))
+                DeviceSelect()
             Case val(3)
                 Dim password As String = ""
                 TPA.Keyboard.Password(password)
-                If password = Values.setting.Read("ПАРОЛЬ", "значение") Then
+                If password = Base.setting.Read("ПАРОЛЬ", "значение") Then
                     setting("Настройки")
+                Else
+                    TPA.Log.Print(TPA.Rank.MESSAGE, "В качестве пароля введено [" & password & "]")
                 End If
         End Select
     End Sub
@@ -61,25 +63,27 @@
 
     Private Sub SelectReport(ByRef head As String)
         Dim local As TPA.DialogForms.CorrectAnswer
+        Dim list As Dictionary(Of String, Integer) = New Dictionary(Of String, Integer)
+        Dim file As Dictionary(Of String, String) = TPA.DialogForms.FilterReport(Base.reports, Base.users.Read(), Base.devices.Read())
+        TPA.DialogForms.WaitFormStart()
+        For Each i As KeyValuePair(Of String, String) In file
+            Try
+                list.Add(i.Value, Convert.ToInt32(i.Key))
+            Catch ex As Exception
+            End Try
+        Next
         Do
-            Dim list As Dictionary(Of String, Integer) = New Dictionary(Of String, Integer)
-            TPA.DialogForms.WaitFormStart()
-            Dim file As Dictionary(Of String, String) = Values.reports.ReadByParam("заголовок")
-            For Each i In file
-                Try
-                    list.Add(i.Value, Convert.ToInt32(i.Key))
-                Catch ex As Exception
-                End Try
-            Next
             TPA.DialogForms.WaitFormStop()
-            local = TPA.DialogForms.Correct(list.Keys.ToArray, head, False, True)
-            Select Case local.FormResult
-                Case TPA.resultOfCorrect.Add
-                Case TPA.resultOfCorrect.Correct
-                    Report.Show(list.Item(local.Elem))
-                Case TPA.resultOfCorrect.Del
-                    Values.reports.Delete(list.Item(local.Elem))
-            End Select
+            If list.Count > 0 Then
+                local = TPA.DialogForms.Correct(list.Keys.ToArray, head, False, True)
+                Select Case local.FormResult
+                    Case TPA.resultOfCorrect.Add
+                    Case TPA.resultOfCorrect.Correct
+                        Report.Show(list.Item(local.Elem))
+                    Case TPA.resultOfCorrect.Del
+                        Base.reports.Delete(list.Item(local.Elem))
+                End Select
+            End If
         Loop While local.FormResult <> TPA.resultOfCorrect.OK And local.FormResult <> TPA.resultOfCorrect.Cancel
     End Sub
 
@@ -96,28 +100,97 @@
     Private Function CreateDevice(Optional ByVal name As String = "") As Boolean
         CreateDevice = True
         Dim newObj As Boolean
-        If Values.devices.ObjectInFile(name) Then
+        If Base.devices.ObjectInFile(name) Then
 
             newObj = False
         Else
 
             newObj = True
         End If
-        Dim res As String()
         'форма ввода параметров устройства ниже
-        res = TPA.DialogForms.Setting(New String() {""}, _
-                                      New String() {""}, _
-                                      New TPA.DialogForms.ValueType() {TPA.ValueType.text}, _
+        Dim device As Base.DeviceStruct = If(newObj, New Base.DeviceStruct, Base.ReadDevice(name))
+        Dim oldDevice As Base.DeviceStruct = device
+        Dim res As Collection = New Collection()
+        res.Add(device.name)
+        res.Add(device.KontCount)
+        res.Add(device.U)
+        res.Add(device.Uvalid)
+        res.Add(device.I)
+        res.Add(device.Ivalid)
+        res.Add(device.R)
+        res.Add(device.Rvalid)
+        res = TPA.DialogForms.Setting(res, _
+                                      New String() {"Модель", _
+                                                    "Количество контактов", _
+                                                    "Номинальное напряжение, В", _
+                                                    "Допуск по напряжению, В", _
+                                                    "Номинальная сила тока, А", _
+                                                    "Допуск по силе тока, А", _
+                                                    "Номинальное сопротивление, Ом", _
+                                                    "Допуск по сопротивлению, Ом"}, _
+                                      New TPA.DialogForms.ValueType() {TPA.ValueType.text, _
+                                                                       TPA.ValueType.uint, _
+                                                                       TPA.ValueType.uint, _
+                                                                       TPA.ValueType.uint, _
+                                                                       TPA.ValueType.ureal, _
+                                                                       TPA.ValueType.ureal, _
+                                                                       TPA.ValueType.ureal, _
+                                                                       TPA.ValueType.ureal}, _
                                       "Устройство")
+        device.name = res(1)
+        device.KontCount = res(2)
+        device.U = res(3)
+        device.Uvalid = res(4)
+        device.I = res(5)
+        device.Ivalid = res(6)
+        device.R = res(7)
+        device.Rvalid = res(8)
         Try
-            If (newObj And res(0).Length > 0 And (Not Values.devices.ObjectInFile(res(0)))) _
-            Or ((Not newObj) And res(0).Length > 0 And (name = res(0) Or (Not Values.devices.ObjectInFile(res(0))))) Then
-                'Сохранение параметров устройства сюда
+            If (newObj And device.name.Length > 0 And (Not Base.devices.ObjectInFile(device.name))) _
+            Or ((Not newObj) And device.name.Length > 0 And (name = device.name Or (Not Base.devices.ObjectInFile(device.name)))) Then
+                For i As Integer = 0 To device.KontCount - 1
+                    res.Clear()
+                    res.Add(device.РастворКонтактаMin(i))
+                    res.Add(device.РастворКонтактаMax(i))
+                    res.Add(device.ПровалКонтактаMin(i))
+                    res.Add(device.ПровалКонтактаMax(i))
+                    res.Add(device.НажатиеНачMin(i))
+                    res.Add(device.НажатиеНачMax(i))
+                    res.Add(device.НажатиеКонMin(i))
+                    res.Add(device.НажатиеКонMax(i))
+                    res = TPA.DialogForms.Setting(res, _
+                                                  New String() {"Раствор контакта (min), мм", _
+                                                                "Раствор контакта (max), мм", _
+                                                                "Провал контакта (min), мм", _
+                                                                "Провал контакта (max), мм", _
+                                                                "Усилие нажатия начальное (min), кг", _
+                                                                "Усилие нажатия начальное (max), кг", _
+                                                                "Усилие нажатия конечное (min), кг", _
+                                                                "Усилие нажатия конечное (max), кг"}, _
+                                                  New TPA.DialogForms.ValueType() {TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal}, _
+                                                  "Контакт " & i + 1)
+                    device.РастворКонтактаMin(i) = res(1)
+                    device.РастворКонтактаMax(i) = res(2)
+                    device.ПровалКонтактаMin(i) = res(3)
+                    device.ПровалКонтактаMax(i) = res(4)
+                    device.НажатиеНачMin(i) = res(5)
+                    device.НажатиеНачMax(i) = res(6)
+                    device.НажатиеКонMin(i) = res(7)
+                    device.НажатиеКонMax(i) = res(8)
+                Next
+                Base.WriteDevice(device)
             Else
-                If res(0).Length > 0 Then
-                    TPA.DialogForms.Message("Модель уже есть в базе.", "", TPA.DialogForms.MsgType.warning)
+                If device.name.Length > 0 Then
+                    TPA.DialogForms.Message("Устройтво уже есть в базе.", "", TPA.DialogForms.MsgType.warning)
                 Else
-                    TPA.DialogForms.Message("Невозможно создать форсунку без названия.", "", TPA.DialogForms.MsgType.warning)
+                    TPA.DialogForms.Message("Невозможно создать устройство без названия.", "", TPA.DialogForms.MsgType.warning)
                 End If
                 Return False
             End If
@@ -135,16 +208,26 @@
     Private Sub SettingDevice(ByRef head As String)
         Dim local As TPA.DialogForms.CorrectAnswer
         Do
-            local = TPA.DialogForms.Correct(Values.devices.Read(), head)
+            local = TPA.DialogForms.Correct(Base.devices.Read(), head)
             Select Case local.FormResult
                 Case TPA.resultOfCorrect.Add
                     CreateDevice()
                 Case TPA.resultOfCorrect.Correct
                     CreateDevice(local.Elem)
                 Case TPA.resultOfCorrect.Del
-                    Values.devices.Delete(local.Elem)
+                    Base.devices.Delete(local.Elem)
             End Select
         Loop While local.FormResult <> TPA.resultOfCorrect.OK And local.FormResult <> TPA.resultOfCorrect.Cancel
+    End Sub
+
+    ''' <summary>
+    ''' Выбор устройства из списка, запись его в модуль Test
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Sub DeviceSelect()
+        'Test.device.name = TPA.DialogForms.Selection(Base.devices.Read(), "Устройство")
+        Test.device = Base.ReadDevice(TPA.DialogForms.Selection(Base.devices.Read(), "Устройство"))
+        If Test.device.name = Nothing Then Test.device.name = ""
     End Sub
 
 #End Region
@@ -159,14 +242,14 @@
     Private Sub SettingUser(ByRef head As String)
         Dim local As TPA.DialogForms.CorrectAnswer
         Do
-            local = TPA.DialogForms.Correct(Values.users.Read(), head)
+            local = TPA.DialogForms.Correct(Base.users.Read(), head)
             Select Case local.FormResult
                 Case TPA.resultOfCorrect.Add
                     CreateUser()
                 Case TPA.resultOfCorrect.Correct
-                    If CreateUser(local.Elem) Then Values.users.Delete(local.Elem)
+                    If CreateUser(local.Elem) Then Base.users.Delete(local.Elem)
                 Case TPA.resultOfCorrect.Del
-                    Values.users.Delete(local.Elem)
+                    Base.users.Delete(local.Elem)
             End Select
         Loop While local.FormResult <> TPA.resultOfCorrect.OK And local.FormResult <> TPA.resultOfCorrect.Cancel
     End Sub
@@ -184,8 +267,8 @@
             TPA.DialogForms.Message("Придумайте что-нибудь поинтереснее.", "", TPA.DialogForms.MsgType.warning)
             CreateUser = False
         Else
-            If Not Values.users.ObjectInFile(user) Then
-                If Values.users.Write(user, New Dictionary(Of String, String)) <> 0 Then
+            If Not Base.users.ObjectInFile(user) Then
+                If Base.users.Write(user, New Dictionary(Of String, String)) <> 0 Then
                     TPA.Log.Print(TPA.Rank.EXCEPT, _
                                   "Оператор " & user & " не добавлен")
                     CreateUser = False
@@ -196,6 +279,15 @@
             End If
         End If
     End Function
+
+    ''' <summary>
+    ''' Выбор оператора из списка, запись его в модуль Test
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Sub UserSelect()
+        Test.user = TPA.DialogForms.Selection(Base.users.Read(), "Оператор")
+        If Test.user = Nothing Then Test.user = ""
+    End Sub
 
 #End Region
 
@@ -211,8 +303,10 @@
             TPA.DialogForms.WaitFormStart()
             Dim f = New System.IO.FileInfo(TPA.BasePath & "property\report.ini")
             f.Delete()
-            Values.setting.Write("ПРОТОКОЛ", "номер", 0)
+            Base.setting.Write("ПРОТОКОЛ", "номер", 1)
+            Base.setting.Write("ПРОТОКОЛ", "newReport", True)
             Threading.Thread.Sleep(2000)
+            TPA.Log.Print(TPA.Rank.OK, "Сброс истории выполнен")
             TPA.DialogForms.WaitFormStop()
         End If
     End Sub
@@ -222,6 +316,7 @@
     ''' </summary>
     ''' <remarks></remarks>
     Public Sub Quit()
+        TPA.Log.Print(TPA.Rank.MESSAGE, "Осуществлен преднамеренный выход из приложения")
         TPA.DeviseInspection.stopInspection()
         TPA.Main.TaskBarShow()
         Application.Exit()
