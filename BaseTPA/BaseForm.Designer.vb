@@ -21,38 +21,38 @@ Partial Public Class BaseForm
     Private Sub InitializeComponent()
         Me.PanelBoth = New System.Windows.Forms.Panel
         Me.LabelBothBody = New System.Windows.Forms.Label
+        Me.TimerPanel1 = New TPA.TimerPanel
+        Me.ButtonBoth = New TPA.ButtonNew
         Me.PanelBothHead = New System.Windows.Forms.Panel
         Me.LabelBothHead = New System.Windows.Forms.Label
         Me.Label1 = New System.Windows.Forms.Label
         Me.PanelControl = New System.Windows.Forms.Panel
+        Me.ButtonStop = New TPA.ButtonNew
+        Me.ButtonService = New TPA.ButtonNew
+        Me.ButtonReport = New TPA.ButtonNew
+        Me.ButtonNew = New TPA.ButtonNew
         Me.Label2 = New System.Windows.Forms.Label
         Me.PanelBody = New System.Windows.Forms.Panel
         Me.PanelButtons = New System.Windows.Forms.Panel
-        Me.Label6 = New System.Windows.Forms.Label
-        Me.Label5 = New System.Windows.Forms.Label
-        Me.Label4 = New System.Windows.Forms.Label
-        Me.Label3 = New System.Windows.Forms.Label
-        Me.LabelHead = New System.Windows.Forms.Label
-        Me.TimerControl = New System.Windows.Forms.Timer
         Me.ButtonSaveR = New TPA.ButtonNew
         Me.ButtonSaveO = New TPA.ButtonNew
         Me.ButtonSaveI = New TPA.ButtonNew
+        Me.Label6 = New System.Windows.Forms.Label
         Me.ButtonUdown = New TPA.ButtonNew
         Me.ButtonUup = New TPA.ButtonNew
         Me.ButtonImax10A = New TPA.ButtonNew
         Me.ButtonImax1A = New TPA.ButtonNew
         Me.ButtonR = New TPA.ButtonNew
+        Me.Label5 = New System.Windows.Forms.Label
+        Me.Label4 = New System.Windows.Forms.Label
+        Me.Label3 = New System.Windows.Forms.Label
         Me.DeviceValueUser = New TPA.DeviceValue
         Me.DeviceValueR = New TPA.DeviceValue
         Me.DeviceValueI = New TPA.DeviceValue
         Me.DeviceValueU = New TPA.DeviceValue
         Me.DeviceValueModel = New TPA.DeviceValue
-        Me.ButtonStop = New TPA.ButtonNew
-        Me.ButtonService = New TPA.ButtonNew
-        Me.ButtonReport = New TPA.ButtonNew
-        Me.ButtonNew = New TPA.ButtonNew
-        Me.TimerPanel1 = New TPA.TimerPanel
-        Me.ButtonBoth = New TPA.ButtonNew
+        Me.LabelHead = New System.Windows.Forms.Label
+        Me.TimerControl = New System.Windows.Forms.Timer
         Me.PanelBoth.SuspendLayout()
         Me.PanelBothHead.SuspendLayout()
         Me.PanelControl.SuspendLayout()
@@ -81,6 +81,24 @@ Partial Public Class BaseForm
         Me.LabelBothBody.Name = "LabelBothBody"
         Me.LabelBothBody.Size = New System.Drawing.Size(598, 60)
         Me.LabelBothBody.Text = "LabelBothBody"
+        '
+        'TimerPanel1
+        '
+        Me.TimerPanel1.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.TimerPanel1.Location = New System.Drawing.Point(0, 85)
+        Me.TimerPanel1.Name = "TimerPanel1"
+        Me.TimerPanel1.Size = New System.Drawing.Size(598, 25)
+        Me.TimerPanel1.TabIndex = 13
+        '
+        'ButtonBoth
+        '
+        Me.ButtonBoth.Color = System.Drawing.Color.Silver
+        Me.ButtonBoth.Dock = System.Windows.Forms.DockStyle.Right
+        Me.ButtonBoth.Location = New System.Drawing.Point(598, 25)
+        Me.ButtonBoth.MyText = "Старт"
+        Me.ButtonBoth.Name = "ButtonBoth"
+        Me.ButtonBoth.Size = New System.Drawing.Size(200, 85)
+        Me.ButtonBoth.TabIndex = 10
         '
         'PanelBothHead
         '
@@ -124,6 +142,46 @@ Partial Public Class BaseForm
         Me.PanelControl.Location = New System.Drawing.Point(0, 0)
         Me.PanelControl.Name = "PanelControl"
         Me.PanelControl.Size = New System.Drawing.Size(125, 350)
+        '
+        'ButtonStop
+        '
+        Me.ButtonStop.Color = System.Drawing.Color.Red
+        Me.ButtonStop.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ButtonStop.Location = New System.Drawing.Point(0, 250)
+        Me.ButtonStop.MyText = "СТОП"
+        Me.ButtonStop.Name = "ButtonStop"
+        Me.ButtonStop.Size = New System.Drawing.Size(125, 100)
+        Me.ButtonStop.TabIndex = 14
+        '
+        'ButtonService
+        '
+        Me.ButtonService.Color = System.Drawing.Color.Silver
+        Me.ButtonService.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ButtonService.Location = New System.Drawing.Point(0, 175)
+        Me.ButtonService.MyText = "Сервис"
+        Me.ButtonService.Name = "ButtonService"
+        Me.ButtonService.Size = New System.Drawing.Size(125, 75)
+        Me.ButtonService.TabIndex = 13
+        '
+        'ButtonReport
+        '
+        Me.ButtonReport.Color = System.Drawing.Color.Silver
+        Me.ButtonReport.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ButtonReport.Location = New System.Drawing.Point(0, 100)
+        Me.ButtonReport.MyText = "Протокол"
+        Me.ButtonReport.Name = "ButtonReport"
+        Me.ButtonReport.Size = New System.Drawing.Size(125, 75)
+        Me.ButtonReport.TabIndex = 12
+        '
+        'ButtonNew
+        '
+        Me.ButtonNew.Color = System.Drawing.Color.Silver
+        Me.ButtonNew.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ButtonNew.Location = New System.Drawing.Point(0, 25)
+        Me.ButtonNew.MyText = "Новое"
+        Me.ButtonNew.Name = "ButtonNew"
+        Me.ButtonNew.Size = New System.Drawing.Size(125, 75)
+        Me.ButtonNew.TabIndex = 11
         '
         'Label2
         '
@@ -174,68 +232,6 @@ Partial Public Class BaseForm
         Me.PanelButtons.Name = "PanelButtons"
         Me.PanelButtons.Size = New System.Drawing.Size(673, 100)
         '
-        'Label6
-        '
-        Me.Label6.BackColor = System.Drawing.Color.Black
-        Me.Label6.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
-        Me.Label6.ForeColor = System.Drawing.Color.White
-        Me.Label6.Location = New System.Drawing.Point(151, 0)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(225, 25)
-        Me.Label6.Text = "Записать знач-я"
-        Me.Label6.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        '
-        'Label5
-        '
-        Me.Label5.BackColor = System.Drawing.Color.Black
-        Me.Label5.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
-        Me.Label5.ForeColor = System.Drawing.Color.White
-        Me.Label5.Location = New System.Drawing.Point(377, 0)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(148, 25)
-        Me.Label5.Text = "Предел изм."
-        Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        '
-        'Label4
-        '
-        Me.Label4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label4.BackColor = System.Drawing.Color.Black
-        Me.Label4.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
-        Me.Label4.ForeColor = System.Drawing.Color.White
-        Me.Label4.Location = New System.Drawing.Point(526, 0)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(147, 25)
-        Me.Label4.Text = "Реж. замера R"
-        Me.Label4.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        '
-        'Label3
-        '
-        Me.Label3.BackColor = System.Drawing.Color.Black
-        Me.Label3.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
-        Me.Label3.ForeColor = System.Drawing.Color.White
-        Me.Label3.Location = New System.Drawing.Point(0, 0)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(150, 25)
-        Me.Label3.Text = "Регулировка U"
-        Me.Label3.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        '
-        'LabelHead
-        '
-        Me.LabelHead.BackColor = System.Drawing.Color.Black
-        Me.LabelHead.Dock = System.Windows.Forms.DockStyle.Top
-        Me.LabelHead.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
-        Me.LabelHead.ForeColor = System.Drawing.Color.White
-        Me.LabelHead.Location = New System.Drawing.Point(0, 0)
-        Me.LabelHead.Name = "LabelHead"
-        Me.LabelHead.Size = New System.Drawing.Size(673, 25)
-        Me.LabelHead.Text = "Показания"
-        Me.LabelHead.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        '
-        'TimerControl
-        '
-        Me.TimerControl.Enabled = True
-        '
         'ButtonSaveR
         '
         Me.ButtonSaveR.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -271,6 +267,17 @@ Partial Public Class BaseForm
         Me.ButtonSaveI.Name = "ButtonSaveI"
         Me.ButtonSaveI.Size = New System.Drawing.Size(73, 75)
         Me.ButtonSaveI.TabIndex = 33
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Black
+        Me.Label6.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
+        Me.Label6.ForeColor = System.Drawing.Color.White
+        Me.Label6.Location = New System.Drawing.Point(151, 0)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(225, 25)
+        Me.Label6.Text = "Записать знач-я"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'ButtonUdown
         '
@@ -337,6 +344,41 @@ Partial Public Class BaseForm
         Me.ButtonR.Size = New System.Drawing.Size(147, 75)
         Me.ButtonR.TabIndex = 28
         '
+        'Label5
+        '
+        Me.Label5.BackColor = System.Drawing.Color.Black
+        Me.Label5.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
+        Me.Label5.ForeColor = System.Drawing.Color.White
+        Me.Label5.Location = New System.Drawing.Point(377, 0)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(148, 25)
+        Me.Label5.Text = "Предел изм."
+        Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
+        'Label4
+        '
+        Me.Label4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label4.BackColor = System.Drawing.Color.Black
+        Me.Label4.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
+        Me.Label4.ForeColor = System.Drawing.Color.White
+        Me.Label4.Location = New System.Drawing.Point(526, 0)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(147, 25)
+        Me.Label4.Text = "Реж. замера R"
+        Me.Label4.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
+        'Label3
+        '
+        Me.Label3.BackColor = System.Drawing.Color.Black
+        Me.Label3.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
+        Me.Label3.ForeColor = System.Drawing.Color.White
+        Me.Label3.Location = New System.Drawing.Point(0, 0)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(150, 25)
+        Me.Label3.Text = "Регулировка U"
+        Me.Label3.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
         'DeviceValueUser
         '
         Me.DeviceValueUser.Color = System.Drawing.SystemColors.ControlLight
@@ -402,63 +444,22 @@ Partial Public Class BaseForm
         Me.DeviceValueModel.TabIndex = 1
         Me.DeviceValueModel.Value = "контактор КМ2334-23М4"
         '
-        'ButtonStop
+        'LabelHead
         '
-        Me.ButtonStop.Color = System.Drawing.Color.Red
-        Me.ButtonStop.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ButtonStop.Location = New System.Drawing.Point(0, 250)
-        Me.ButtonStop.MyText = "СТОП"
-        Me.ButtonStop.Name = "ButtonStop"
-        Me.ButtonStop.Size = New System.Drawing.Size(125, 100)
-        Me.ButtonStop.TabIndex = 14
+        Me.LabelHead.BackColor = System.Drawing.Color.Black
+        Me.LabelHead.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LabelHead.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
+        Me.LabelHead.ForeColor = System.Drawing.Color.White
+        Me.LabelHead.Location = New System.Drawing.Point(0, 0)
+        Me.LabelHead.Name = "LabelHead"
+        Me.LabelHead.Size = New System.Drawing.Size(673, 25)
+        Me.LabelHead.Text = "Показания"
+        Me.LabelHead.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
-        'ButtonService
+        'TimerControl
         '
-        Me.ButtonService.Color = System.Drawing.Color.Silver
-        Me.ButtonService.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ButtonService.Location = New System.Drawing.Point(0, 175)
-        Me.ButtonService.MyText = "Сервис"
-        Me.ButtonService.Name = "ButtonService"
-        Me.ButtonService.Size = New System.Drawing.Size(125, 75)
-        Me.ButtonService.TabIndex = 13
-        '
-        'ButtonReport
-        '
-        Me.ButtonReport.Color = System.Drawing.Color.Silver
-        Me.ButtonReport.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ButtonReport.Location = New System.Drawing.Point(0, 100)
-        Me.ButtonReport.MyText = "Протокол"
-        Me.ButtonReport.Name = "ButtonReport"
-        Me.ButtonReport.Size = New System.Drawing.Size(125, 75)
-        Me.ButtonReport.TabIndex = 12
-        '
-        'ButtonNew
-        '
-        Me.ButtonNew.Color = System.Drawing.Color.Silver
-        Me.ButtonNew.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ButtonNew.Location = New System.Drawing.Point(0, 25)
-        Me.ButtonNew.MyText = "Новое"
-        Me.ButtonNew.Name = "ButtonNew"
-        Me.ButtonNew.Size = New System.Drawing.Size(125, 75)
-        Me.ButtonNew.TabIndex = 11
-        '
-        'TimerPanel1
-        '
-        Me.TimerPanel1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.TimerPanel1.Location = New System.Drawing.Point(0, 85)
-        Me.TimerPanel1.Name = "TimerPanel1"
-        Me.TimerPanel1.Size = New System.Drawing.Size(598, 25)
-        Me.TimerPanel1.TabIndex = 13
-        '
-        'ButtonBoth
-        '
-        Me.ButtonBoth.Color = System.Drawing.Color.Silver
-        Me.ButtonBoth.Dock = System.Windows.Forms.DockStyle.Right
-        Me.ButtonBoth.Location = New System.Drawing.Point(598, 25)
-        Me.ButtonBoth.MyText = "Старт"
-        Me.ButtonBoth.Name = "ButtonBoth"
-        Me.ButtonBoth.Size = New System.Drawing.Size(200, 85)
-        Me.ButtonBoth.TabIndex = 10
+        Me.TimerControl.Enabled = True
+        Me.TimerControl.Interval = 200
         '
         'BaseForm
         '

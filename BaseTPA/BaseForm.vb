@@ -96,6 +96,7 @@
                     Test.device.ControlsParameters = par
                     firstStart = False
                     R = 0
+                    U = 0
                     Operation = Steps.UIWait
                 Else
                     Operation = Steps.Sleep
@@ -105,6 +106,7 @@
             End If
         Else
             R = 0
+            U = 0
             Operation = Steps.UIWait
         End If
     End Sub
@@ -139,6 +141,8 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub OperatonRControl()
+        U = 0
+        Threading.Thread.Sleep(500)
         Test.RreadStart()
     End Sub
 

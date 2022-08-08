@@ -18,7 +18,7 @@
 
 #Region "UI"
 
-    Private _UImeter As TPA.БФУ_GB106v2 = New TPA.БФУ_GB106v2(_UImeterAddres, _UImeterName)
+    Private _UImeter As TPA.БФУ_GB106v2 = New TPA.БФУ_GB106v2(_UImeterAddres, _UImeterName, writeTimeout:=200)
     Private ReadOnly Property _UImeterAddres() As Integer
         Get
             Try
@@ -50,7 +50,7 @@
 
 #Region "R"
     Friend R As Double = 0
-    Private _Rmeter As TPA.КМФ_1115_омметр = New TPA.КМФ_1115_омметр(_RmeterAddres, _RmeterName)
+    Private _Rmeter As TPA.КМФ_1115_омметр = New TPA.КМФ_1115_омметр(_RmeterAddres, _RmeterName, writeTimeout:=200)
     Private ReadOnly Property _RmeterAddres() As Integer
         Get
             Try
@@ -72,17 +72,24 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub Rread()
-        Dim res = _Rmeter.val
-        If res = Nothing Then
-            TPA.DialogForms.Message("Перед измерением сопротивления отключите источник от устройства!", "АВАРИЯ", TPA.MsgType.except)
-            TPA.Log.Print(TPA.Rank.MESSAGE, "Замер сопротивления при подключенном напряжении")
-        Else
-            If res = Integer.MinValue Then TPA.Log.Print(TPA.Rank.WARNING, "Сопротивление не прочитано, наверное недостаточно времени")
-            If res > 0 And res < Int32.MaxValue Then
-                R = res
-            Else
-            End If
-        End If
+        Do
+            Dim res
+            Try
+                res = _Rmeter.val
+                If res = Nothing Then
+                    TPA.DialogForms.Message("Перед измерением сопротивления отключите источник от устройства!", "АВАРИЯ", TPA.MsgType.except)
+                    TPA.Log.Print(TPA.Rank.MESSAGE, "Замер сопротивления при подключенном напряжении")
+                Else
+                    If res = Integer.MinValue Then TPA.Log.Print(TPA.Rank.WARNING, "Сопротивление не прочитано, наверное недостаточно времени")
+                    If res > 0 And res < Int32.MaxValue Then
+                        R = res
+                    Else
+                    End If
+                End If
+            Catch ex As Exception
+                TPA.Log.Print(TPA.Rank.EXCEPT, "Ошибка чтения R [Test Sub Rread()]")
+            End Try
+        Loop
     End Sub
 
     Private thread As Threading.Thread
@@ -136,30 +143,31 @@
         Get
             Try
                 Dim res As TPA.DeviseInspection.ResultType = TPA.DeviseInspection.result(_UImeterAddres)
-                TPA.Log.Print(TPA.Rank.EXCEPT, res.err)
+                If res.err.Length > 0 Then TPA.Log.Print(TPA.Rank.EXCEPT, res.err)
                 Dim answer As Dictionary(Of String, Object) = res.answer
                 If A1using Then
-                    I = answer("Ain1")
+                    I = answer(setting.Read("СТЕНД", "I1Achannel"))
                     Try
-                        I *= Convert.ToDouble(setting.Read("СТЕНД", "БФУ-1 (*)"))
+                        I *= Convert.ToDouble(setting.Read("СТЕНД", "I1A (*)"))
                     Catch ex As Exception
                     End Try
                     Try
-                        I += Convert.ToDouble(setting.Read("СТЕНД", "БФУ-1 (+)"))
+                        I += Convert.ToDouble(setting.Read("СТЕНД", "I1A (+)"))
                     Catch ex As Exception
                     End Try
                 Else
-                    I = answer("Ain2")
+                    I = answer(setting.Read("СТЕНД", "I10Achannel"))
                     Try
-                        I *= Convert.ToDouble(setting.Read("СТЕНД", "БФУ-2 (*)"))
+                        I *= Convert.ToDouble(setting.Read("СТЕНД", "I10A (*)"))
                     Catch ex As Exception
                     End Try
                     Try
-                        I += Convert.ToDouble(setting.Read("СТЕНД", "БФУ-2 (+)"))
+                        I += Convert.ToDouble(setting.Read("СТЕНД", "I10A (+)"))
                     Catch ex As Exception
                     End Try
                 End If
             Catch ex As Exception
+                TPA.Log.Print(TPA.Rank.EXCEPT, "Ошибка чтения I [Test Property I() As Double]")
                 Return 0
             End Try
         End Get
@@ -173,6 +181,7 @@
         Set(ByVal value As Integer)
             If value < 0 Then value = 0
             If value > 4095 Then value = 4095
+            U = value
             _Urec = value
         End Set
     End Property
@@ -210,18 +219,20 @@
         Get
             Try
                 Dim res As TPA.DeviseInspection.ResultType = TPA.DeviseInspection.result(_UImeterAddres)
-                TPA.Log.Print(TPA.Rank.EXCEPT, res.err)
+                If res.err.Length > 0 Then TPA.Log.Print(TPA.Rank.EXCEPT, res.err)
                 Dim answer As Dictionary(Of String, Object) = res.answer
-                U = answer("Ain3")
+                Dim Udouble As Double = answer(setting.Read("СТЕНД", "Uchannel"))
                 Try
-                    U *= Convert.ToDouble(setting.Read("СТЕНД", "БФУ-3 (*)"))
+                    Udouble *= Convert.ToDouble(setting.Read("СТЕНД", "U (*)"))
                 Catch ex As Exception
                 End Try
                 Try
-                    U += Convert.ToDouble(setting.Read("СТЕНД", "БФУ-3 (+)"))
+                    Udouble += Convert.ToDouble(setting.Read("СТЕНД", "U (+)"))
                 Catch ex As Exception
                 End Try
+                U = Udouble
             Catch ex As Exception
+                TPA.Log.Print(TPA.Rank.EXCEPT, "Ошибка чтения U [Test Property U() As Integer]")
                 U = 0
             End Try
         End Get
@@ -246,7 +257,7 @@
     Private Function IOnow() As Boolean
         Try
             Dim res As TPA.DeviseInspection.ResultType = TPA.DeviseInspection.result(_UImeterAddres)
-            TPA.Log.Print(TPA.Rank.EXCEPT, res.err)
+            If res.err.Length > 0 Then TPA.Log.Print(TPA.Rank.EXCEPT, res.err)
             Dim answer As Dictionary(Of String, Object) = res.answer
             Dim IOall As KeyValuePair(Of Boolean(), Boolean()) = answer("Дискреты")
             Return IOall.Key(3)
@@ -284,7 +295,7 @@
         Get
             Try
                 Dim res As TPA.DeviseInspection.ResultType = TPA.DeviseInspection.result(_UImeterAddres)
-                TPA.Log.Print(TPA.Rank.EXCEPT, res.err)
+                If res.err.Length > 0 Then TPA.Log.Print(TPA.Rank.EXCEPT, res.err)
                 Dim answer As Dictionary(Of String, Object) = res.answer
                 Dim IOall As KeyValuePair(Of Boolean(), Boolean()) = answer("Дискреты")
                 Return IOall.Value(7)
