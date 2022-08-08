@@ -12,7 +12,7 @@
                                                           "Выберите запрашиваемые параметры.", _
                                                           "Установите щупы для замера тока/напряжения", _
                                                           "Дождитесь завершения замера.", _
-                                                          "Установите щупы для замера сопротивления", _
+                                                          "Отключите щупы для замера тока/напряжения. Установите щупы для замера сопротивления", _
                                                           "Дождитесь завершения замера.", _
                                                           "Отключите щупы. Произведите замер параметров и введите их.", _
                                                           ""}
@@ -31,6 +31,7 @@
         End Get
         Set(ByVal value As Steps)
             If value <> _operation Then
+                TPA.Log.Print(TPA.Rank.OK, "Начат этап " & _operation)
                 _operation = value
                 TimerPanel1.Start(Base.ReadTimeToSleep(Operation))
                 Select Case value
@@ -78,14 +79,23 @@
             If Test.user.Length > 0 Then
                 Servise.DeviceSelect()
                 If Test.device.name.Length > 0 Then
+                    Dim params As String() = New String() {"Сопротивление блока катушек", _
+                                                           "Состояние контактов", _
+                                                           "Раствор контактов", _
+                                                           "Провал контактов", _
+                                                           "Усилие нажатия (начальное)", _
+                                                           "Усилие нажатия (конечное)"}
                     Dim bool = TPA.DialogForms.Setting(New Boolean() {True, True, True, True, True, True}, _
-                                                       New String() {"Сопротивление блока катушек", _
-                                                                     "Состояние контактов", _
-                                                                     "Раствор контактов", _
-                                                                     "Провал контактов", _
-                                                                     "Усилие нажатия (начальное)", _
-                                                                     "Усилие нажатия (конечное)"}, _
+                                                       params, _
                                                        "Измеряемые параметры")
+                    Dim msgBool As String = ""
+                    For j = 0 To bool.Length - 1
+                        If bool(j) Then
+                            If msgBool.Length > 0 Then msgBool &= "; "
+                            msgBool &= params(j)
+                        End If
+                    Next
+                    TPA.Log.Print(TPA.Rank.OK, "Выбрано: " & Test.user & ", " & Test.device.name & " (" & If(msgBool.Length > 0, msgBool, "без параметров") & ")")
                     Dim par As Base.coltrolStruct = New Base.coltrolStruct
                     par.R = bool(0)
                     par.Состояние = bool(1)
@@ -419,14 +429,19 @@
     End Sub
 
     Private Sub ButtonReport_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonReport.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [Протокол]")
         Dim tce As Boolean = TimerControl.Enabled
         TimerControl.Enabled = False
-        If Report.Show(Test.user, Test.device, Test.timeStart) Then newReport = False
+        If Report.Show(Test.user, Test.device, Test.timeStart) Then
+            newReport = False
+            TPA.Log.Print(TPA.Rank.OK, "Протокол сохранен на Flash")
+        End If
         TimerControl.Enabled = tce
         ResetElements()
     End Sub
 
     Private Sub ButtonService_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonService.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [Сервис]")
         Dim tce As Boolean = TimerControl.Enabled
         TimerControl.Enabled = False
         Servise.Service()
@@ -435,6 +450,7 @@
     End Sub
 
     Private Sub ButtonStop_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonStop.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [СТОП]")
         Operation = Steps.Sleep
     End Sub
 
@@ -453,6 +469,7 @@
     End Sub
 
     Private Sub ButtonBoth_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonBoth.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка 'Далее'")
         Select Case Operation
             Case Steps.Sleep
                 Operation = Steps.Start
@@ -483,6 +500,7 @@
             TimerControl.Enabled = False
             Servise.UserSelect()
             TimerControl.Enabled = tce
+            TPA.Log.Print(TPA.Rank.OK, "Выбран оператор " & Test.user)
             ResetElements()
         End If
     End Sub
@@ -493,6 +511,7 @@
             TimerControl.Enabled = False
             Servise.DeviceSelect()
             TimerControl.Enabled = tce
+            TPA.Log.Print(TPA.Rank.OK, "Выбрано устройство " & Test.device.name)
             ResetElements()
         End If
     End Sub
@@ -506,6 +525,7 @@
             Return _ButtonR_Click_Bool
         End Get
         Set(ByVal value As Boolean)
+            TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [" & If(value, "ВКЛ", "ВЫКЛ") & " режим замера R]")
             If value Then
                 ButtonR.Color = Color.LimeGreen
                 Test.RreadStart()
@@ -518,6 +538,7 @@
     End Property
 
     Private Sub ButtonSaveI_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonSaveI.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [зап. ВКЛ]")
         If Not ButtonR_Click_Bool Then
             Test.device.II = Test.I
             Test.device.UI = Test.U
@@ -525,6 +546,7 @@
     End Sub
 
     Private Sub ButtonSaveO_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonSaveO.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [зап. ВЫКЛ]")
         If Not ButtonR_Click_Bool Then
             Test.device.IO = Test.I
             Test.device.UO = Test.U
@@ -532,22 +554,27 @@
     End Sub
 
     Private Sub ButtonSaveR_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonSaveR.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [зап. R]")
         If ButtonR_Click_Bool Then Test.device.Rfact = Test.R
     End Sub
 
     Private Sub ButtonImax1A_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonImax1A.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [1 A]")
         Test.A1using = True
     End Sub
 
     Private Sub ButtonImax10A_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonImax10A.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [10 A]")
         Test.A1using = False
     End Sub
 
     Private Sub ButtonUdown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonUdown.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [U down]")
         Test.UrecBoth()
     End Sub
 
     Private Sub ButtonUup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonUup.Click
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [U up]")
         Test.UrecTop()
     End Sub
 End Class

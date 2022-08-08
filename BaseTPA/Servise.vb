@@ -11,16 +11,20 @@
         Dim val As String() = New String() {"История", "Оператор", "Устройство", "Настройки"}
         Select Case TPA.DialogForms.Selection(val, "Сервис")
             Case val(0)
+                TPA.Log.Print(TPA.Rank.OK, "    История")
                 SelectReport(val(0))
             Case val(1)
+                TPA.Log.Print(TPA.Rank.OK, "    Оператор")
                 UserSelect()
             Case val(2)
+                TPA.Log.Print(TPA.Rank.OK, "    Устройство")
                 DeviceSelect()
             Case val(3)
                 Dim password As String = ""
                 TPA.Keyboard.Password(password)
                 If password = Base.setting.Read("ПАРОЛЬ", "значение") Then
-                    setting("Настройки")
+                    TPA.Log.Print(TPA.Rank.OK, "    Настройки")
+                    setting(val(3))
                 Else
                     TPA.Log.Print(TPA.Rank.MESSAGE, "В качестве пароля введено [" & password & "]")
                 End If
@@ -41,16 +45,20 @@
         Do
             Select Case TPA.DialogForms.Selection(val, head)
                 Case val(0)
+                    TPA.Log.Print(TPA.Rank.OK, "        Операторы")
                     SettingUser(val(0))
                 Case val(1)
+                    TPA.Log.Print(TPA.Rank.OK, "        Устройства")
                     SettingDevice(val(1))
                 Case val(2)
+                    TPA.Log.Print(TPA.Rank.OK, "        Очистить историю")
                     clearHistory()
                 Case val(3)
                     If TPA.DialogForms.Message("Вы точно хотите закрыть приложение?", _
                                                "", _
                                                TPA.DialogForms.MsgType.warning, _
                                                True) Then
+                        TPA.Log.Print(TPA.Rank.OK, "        Выйти из приложения")
                         Quit()
                     End If
                 Case Else

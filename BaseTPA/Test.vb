@@ -237,6 +237,8 @@
             End Try
         End Get
         Set(ByVal value As Integer)
+
+            TPA.Log.Print(TPA.Rank.OK, "U(0..4095)=" & value)
             TPA.DeviseInspection.AddCommand(_UImeter.Регулятор(value))
         End Set
     End Property
@@ -304,6 +306,7 @@
             End Try
         End Get
         Set(ByVal value As Boolean)
+            TPA.Log.Print(TPA.Rank.OK, "Переключение замера напряжения в режим " & If(value, "1 A", "10 A"))
             TPA.DeviseInspection.AddCommand(_UImeter.out8(value))
         End Set
     End Property
