@@ -79,6 +79,8 @@
             If Test.user.Length > 0 Then
                 Servise.DeviceSelect()
                 If Test.device.name.Length > 0 Then
+                    Test.device.num = ""
+                    TPA.Keyboard.Text(Test.device.num, "Номер аппарата")
                     Dim params As String() = New String() {"Сопротивление блока катушек", _
                                                            "Состояние контактов", _
                                                            "Раствор контактов", _
