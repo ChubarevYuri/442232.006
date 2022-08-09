@@ -31,7 +31,22 @@
                 _name = value
             End Set
         End Property
-
+        Private _num As String
+        ''' <summary>
+        ''' Идентификатор устройства
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Property num() As String
+            Get
+                If _num = Nothing Then Return ""
+                Return _num
+            End Get
+            Set(ByVal value As String)
+                _num = value
+            End Set
+        End Property
         Private _U As Integer
         ''' <summary>
         ''' Рабочее напряжение
@@ -179,7 +194,14 @@
         ''' <remarks></remarks>
         Public ReadOnly Property Istring() As String
             Get
-                Return I.ToString(Base.doubleformat) & "±" & Ivalid.ToString(Base.doubleformat)
+                If I > 0 Then
+                    If Ivalid > 0 Then
+                        Return I.ToString(Base.doubleformat) & "±" & Ivalid.ToString(Base.doubleformat)
+                    Else
+                        Return "≤" & I.ToString(Base.doubleformat)
+                    End If
+                End If
+                Return ""
             End Get
         End Property
         Private _II As Integer
@@ -205,7 +227,11 @@
         ''' <remarks></remarks>
         Public ReadOnly Property IIcontrol() As Boolean
             Get
-                Return I - Ivalid <= II And II <= I + Ivalid
+                If Ivalid > 0 Then
+                    Return I - Ivalid <= II And II <= I + Ivalid
+                Else
+                    Return II <= I + Ivalid
+                End If
             End Get
         End Property
         Private _IO As Integer

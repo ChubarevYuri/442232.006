@@ -43,12 +43,13 @@
         _report.Line(New TPA.Line("Дата и время испытания: " & timeStart.ToString("dd.MM.yyyy HH:mm"), _
                                   TPA.Line.Align.Right, _
                                   TPA.Line.StyleLine.None))
-        _report.Line(New TPA.Line("Испытательный стенд: " & Base.setting.Read("ПРОТОКОЛ", _
-                                                                                "стенд"), _
+        _report.Line(New TPA.Line("Модель аппарата: " & If(device.name.Length > 0, _
+                                                      device.name, _
+                                                      "_____________________"), _
                                   TPA.Line.Align.Right, _
                                   TPA.Line.StyleLine.None))
-        _report.Line(New TPA.Line("Устройство: " & If(device.name.Length > 0, _
-                                                      device.name, _
+        _report.Line(New TPA.Line("Номер аппарата: " & If(device.num.Length > 0, _
+                                                      device.num, _
                                                       "_____________________"), _
                                   TPA.Line.Align.Right, _
                                   TPA.Line.StyleLine.None))
@@ -92,7 +93,7 @@
                                   New TPA.Line("А", _
                                                TPA.Line.Align.Center, _
                                                TPA.Line.StyleLine.None), _
-                                  New TPA.Line(If(device.I > 0, device.Istring, ""), _
+                                  New TPA.Line(device.Istring, _
                                                TPA.Line.Align.Center, _
                                                TPA.Line.StyleLine.None), _
                                   New TPA.Line(device.II.ToString(Base.doubleformat), _
@@ -107,7 +108,7 @@
                                   New TPA.Line("А", _
                                                TPA.Line.Align.Center, _
                                                TPA.Line.StyleLine.None), _
-                                  New TPA.Line(If(device.I > 0, device.Istring, ""), _
+                                  New TPA.Line(device.Istring, _
                                                TPA.Line.Align.Center, _
                                                TPA.Line.StyleLine.None), _
                                   New TPA.Line(device.IO.ToString(Base.doubleformat), _
@@ -228,10 +229,10 @@
                                                            TPA.Line.StyleLine.None)})
                 End If
                 If device.ControlsParameters.НажатиеНач Then
-                    table.Add(New TPA.Line() {New TPA.Line("Нажатие на мостик (начальное)", _
+                    table.Add(New TPA.Line() {New TPA.Line("Нажатие (начальное)", _
                                                            TPA.Line.Align.Left, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line("кг", _
+                                              New TPA.Line("Н", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
                                               New TPA.Line(If(device.НажатиеНачMax(i) > 0, device.НажатиеНачMinMaxString(i), ""), _
@@ -245,10 +246,10 @@
                                                            TPA.Line.StyleLine.None)})
                 End If
                 If device.ControlsParameters.НажатиеКон Then
-                    table.Add(New TPA.Line() {New TPA.Line("Нажатие на мостик (конечное)", _
+                    table.Add(New TPA.Line() {New TPA.Line("Нажатие (конечное)", _
                                                            TPA.Line.Align.Left, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line("кг", _
+                                              New TPA.Line("Н", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
                                               New TPA.Line(If(device.НажатиеКонMax(i) > 0, device.НажатиеКонMinMaxString(i), ""), _
@@ -323,10 +324,16 @@
     Public Sub Save(ByVal num As Integer, ByVal device As Base.DeviceStruct, ByVal user As String, ByVal timeStart As DateTime)
         Dim dict As Dictionary(Of String, String) = New Dictionary(Of String, String)
         Dim message As String = ""
-        dict.Add("заголовок", "№" & num & " (" & If(user.Length > 0, user & " ", "") & timeStart.ToString("dd.MM.yyyy HH:mm") & " " & boolToStr(device.FillControl) & ")")
+        dict.Add("заголовок", "№" & num & " (" & _
+                 If(device.name.Length > 0, device.name & " ", "") & _
+                 If(device.num.Length > 0, "<" & device.num & "> ", "") & _
+                 If(user.Length > 0, user & " ", "") & _
+                 timeStart.ToString("dd.MM.yyyy HH:mm") & " " & _
+                 boolToStr(device.FillControl) & ")")
         dict.Add("User", user)
         dict.Add("Time", timeStart)
         dict.Add("Name", device.name)
+        dict.Add("Num", device.num)
         dict.Add("ControlsParameters.R", device.ControlsParameters.R)
         dict.Add("ControlsParameters.Состояние", device.ControlsParameters.Состояние)
         dict.Add("ControlsParameters.РастворКонтактов", device.ControlsParameters.РастворКонтактов)
@@ -435,6 +442,13 @@
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
             key = "Name"
+            Try
+                device.name = dict(key)
+            Catch ex As Exception
+                device.name = ""
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "Num"
             Try
                 device.name = dict(key)
             Catch ex As Exception

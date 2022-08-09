@@ -8,7 +8,7 @@
     ''' </summary>
     ''' <remarks></remarks>
     Public Sub Service()
-        Dim val As String() = New String() {"История", "Оператор", "Устройство", "Настройки"}
+        Dim val As String() = New String() {"История", "Оператор", "Аппарат", "Настройки"}
         Select Case TPA.DialogForms.Selection(val, "Сервис")
             Case val(0)
                 TPA.Log.Print(TPA.Rank.OK, "    История")
@@ -17,7 +17,7 @@
                 TPA.Log.Print(TPA.Rank.OK, "    Оператор")
                 UserSelect()
             Case val(2)
-                TPA.Log.Print(TPA.Rank.OK, "    Устройство")
+                TPA.Log.Print(TPA.Rank.OK, "    Аппарат")
                 DeviceSelect()
             Case val(3)
                 Dim password As String = ""
@@ -41,14 +41,14 @@
     ''' <param name="head"></param>
     ''' <remarks></remarks>
     Private Sub setting(ByRef head As String)
-        Dim val As String() = New String() {"Операторы", "Устройства", "Очистить историю", "Выйти из приложения"}
+        Dim val As String() = New String() {"Операторы", "Аппараты", "Очистить историю", "Выйти из приложения"}
         Do
             Select Case TPA.DialogForms.Selection(val, head)
                 Case val(0)
                     TPA.Log.Print(TPA.Rank.OK, "        Операторы")
                     SettingUser(val(0))
                 Case val(1)
-                    TPA.Log.Print(TPA.Rank.OK, "        Устройства")
+                    TPA.Log.Print(TPA.Rank.OK, "        Аппараты")
                     SettingDevice(val(1))
                 Case val(2)
                     TPA.Log.Print(TPA.Rank.OK, "        Очистить историю")
