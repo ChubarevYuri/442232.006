@@ -1,6 +1,6 @@
 ﻿Module Test
     Public user As String = ""
-    Public device As Base.DeviceStruct
+    Public device As Device = New Device()
     Public timeStart As DateTime = Now
 
     ''' <summary>

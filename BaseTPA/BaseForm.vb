@@ -72,7 +72,7 @@
     ''' <remarks></remarks>
     Private Sub operationStart()
         If firstStart Then
-            Test.device = New Base.DeviceStruct
+            Test.device = New Device()
             Test.user = ""
             Test.timeStart = Now
             Servise.UserSelect()
@@ -99,13 +99,12 @@
                     Next
                     TPA.Log.Print(TPA.Rank.OK, "Выбрано: " & Test.user & ", " & Test.device.name & " (" & If(msgBool.Length > 0, msgBool, "без параметров") & ")")
                     Dim par As Base.coltrolStruct = New Base.coltrolStruct
-                    par.R = bool(0)
-                    par.Состояние = bool(1)
-                    par.РастворКонтактов = bool(2)
-                    par.ПровалКонтактов = bool(3)
-                    par.НажатиеНач = bool(4)
-                    par.НажатиеКон = bool(5)
-                    Test.device.ControlsParameters = par
+                    Test.device.РабочиеПарамерты.R = bool(0)
+                    Test.device.РабочиеПарамерты.Состояние = bool(1)
+                    Test.device.РабочиеПарамерты.РастворКонтактов = bool(2)
+                    Test.device.РабочиеПарамерты.ПровалКонтактов = bool(3)
+                    Test.device.РабочиеПарамерты.НажатиеНач = bool(4)
+                    Test.device.РабочиеПарамерты.НажатиеКон = bool(5)
                     firstStart = False
                     R = 0
                     U = 0
@@ -163,130 +162,113 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub OperationMechanicalControl()
-        If Test.device.KontCount > 1 Then
-            If Test.device.ControlsParameters.Состояние Then
-                Dim all(Test.device.KontCount - 1) As Boolean
-                Dim head(Test.device.KontCount - 1) As String
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    all(i) = Test.device.Состояние(i)
-                    head(i) = "Контакт " & i + 1
+        If Test.device.KontACount > 1 Or Test.device.KontBCount > 1 Then
+            If Test.device.РабочиеПарамерты.Состояние Then
+                Dim all(Test.device.KontACount + Test.device.KontBCount - 1) As Boolean
+                Dim head(Test.device.KontACount + Test.device.KontBCount - 1) As String
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    all(i) = Test.device.СостояниеA(i)
+                    head(i) = "Контакт силовой № " & i + 1
+                Next
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
+                    all(i) = Test.device.СостояниеB(i - Test.device.KontACount)
+                    head(i) = "Контакт вспомогательный № " & i + 1 - Test.device.KontACount
                 Next
                 all = TPA.DialogForms.Setting(all, head, "Состояние контактов")
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    Test.device.Состояние(i) = all(i)
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    Test.device.СостояниеA(i) = all(i)
+                Next
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
+                    Test.device.СостояниеA(i - Test.device.KontACount) = all(i)
                 Next
             End If
-            If Test.device.ControlsParameters.РастворКонтактов Then
-                Dim all(Test.device.KontCount - 1) As Double
-                Dim head(Test.device.KontCount - 1) As String
-                Dim type(Test.device.KontCount - 1) As TPA.DialogForms.ValueType
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    all(i) = Test.device.РастворКонтактаFact(i)
-                    head(i) = "Контакт " & i + 1
+            If Test.device.РабочиеПарамерты.РастворКонтактов Then
+                Dim all(Test.device.KontACount + Test.device.KontBCount - 1) As Double
+                Dim head(Test.device.KontACount + Test.device.KontBCount - 1) As String
+                Dim type(Test.device.KontACount + Test.device.KontBCount - 1) As TPA.DialogForms.ValueType
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    all(i) = Test.device.РастворКонтактаAFact(i)
+                    head(i) = "Контакт силовой № " & i + 1
+                    type(i) = TPA.DialogForms.ValueType.ureal
+                Next
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
+                    all(i) = Test.device.РастворКонтактаBFact(i - Test.device.KontACount)
+                    head(i) = "Контакт вспомогательный № " & i + 1 - Test.device.KontACount
                     type(i) = TPA.DialogForms.ValueType.ureal
                 Next
                 all = TPA.DialogForms.Setting(all, head, type, "Растворы контактов")
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    Test.device.РастворКонтактаFact(i) = all(i)
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    Test.device.РастворКонтактаAFact(i) = all(i)
+                Next
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
+                    Test.device.РастворКонтактаBFact(i - Test.device.KontACount) = all(i)
                 Next
             End If
-            If Test.device.ControlsParameters.ПровалКонтактов Then
-                Dim all(Test.device.KontCount - 1) As Double
-                Dim head(Test.device.KontCount - 1) As String
-                Dim type(Test.device.KontCount - 1) As TPA.DialogForms.ValueType
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    all(i) = Test.device.ПровалКонтактаFact(i)
-                    head(i) = "Контакт " & i + 1
+            If Test.device.РабочиеПарамерты.ПровалКонтактов Then
+                Dim all(Test.device.KontACount + Test.device.KontBCount - 1) As Double
+                Dim head(Test.device.KontACount + Test.device.KontBCount - 1) As String
+                Dim type(Test.device.KontACount + Test.device.KontBCount - 1) As TPA.DialogForms.ValueType
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    all(i) = Test.device.ПровалКонтактаAFact(i)
+                    head(i) = "Контакт силовой № " & i + 1
+                    type(i) = TPA.DialogForms.ValueType.ureal
+                Next
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
+                    all(i) = Test.device.ПровалКонтактаBFact(i - Test.device.KontACount)
+                    head(i) = "Контакт вспомогательный № " & i + 1 - Test.device.KontACount
                     type(i) = TPA.DialogForms.ValueType.ureal
                 Next
                 all = TPA.DialogForms.Setting(all, head, type, "Провалы контактов")
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    Test.device.ПровалКонтактаFact(i) = all(i)
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    Test.device.ПровалКонтактаAFact(i) = all(i)
+                Next
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
+                    Test.device.ПровалКонтактаBFact(i - Test.device.KontACount) = all(i)
                 Next
             End If
-            If Test.device.ControlsParameters.НажатиеНач Then
-                Dim all(Test.device.KontCount - 1) As Double
-                Dim head(Test.device.KontCount - 1) As String
-                Dim type(Test.device.KontCount - 1) As TPA.DialogForms.ValueType
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    all(i) = Test.device.НажатиеНачFact(i)
-                    head(i) = "Контакт " & i + 1
+            If Test.device.РабочиеПарамерты.НажатиеНач Then
+                Dim all(Test.device.KontACount + Test.device.KontBCount - 1) As Double
+                Dim head(Test.device.KontACount + Test.device.KontBCount - 1) As String
+                Dim type(Test.device.KontACount + Test.device.KontBCount - 1) As TPA.DialogForms.ValueType
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    all(i) = Test.device.НажатиеНачAFact(i)
+                    head(i) = "Контакт силовой № " & i + 1
+                    type(i) = TPA.DialogForms.ValueType.ureal
+                Next
+                For i As Integer = Test.device.KontACount To Test.device.KontACount - 1
+                    all(i) = Test.device.НажатиеНачAFact(i - Test.device.KontACount)
+                    head(i) = "Контакт вспомогательный № " & i + 1 - Test.device.KontACount
                     type(i) = TPA.DialogForms.ValueType.ureal
                 Next
                 all = TPA.DialogForms.Setting(all, head, type, "Усилие нажатия (начальное)")
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    Test.device.НажатиеНачFact(i) = all(i)
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    Test.device.НажатиеНачAFact(i) = all(i)
+                Next
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
+                    Test.device.НажатиеНачBFact(i - Test.device.KontACount) = all(i)
                 Next
             End If
-            If Test.device.ControlsParameters.НажатиеКон Then
-                Dim all(Test.device.KontCount - 1) As Double
-                Dim head(Test.device.KontCount - 1) As String
-                Dim type(Test.device.KontCount - 1) As TPA.DialogForms.ValueType
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    all(i) = Test.device.НажатиеКонFact(i)
-                    head(i) = "Контакт " & i + 1
+            If Test.device.РабочиеПарамерты.НажатиеКон Then
+                Dim all(Test.device.KontACount + Test.device.KontBCount - 1) As Double
+                Dim head(Test.device.KontACount + Test.device.KontBCount - 1) As String
+                Dim type(Test.device.KontACount + Test.device.KontBCount - 1) As TPA.DialogForms.ValueType
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    all(i) = Test.device.НажатиеКонAFact(i)
+                    head(i) = "Контакт силовой № " & i + 1
+                    type(i) = TPA.DialogForms.ValueType.ureal
+                Next
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
+                    all(i) = Test.device.НажатиеКонBFact(i - Test.device.KontACount)
+                    head(i) = "Контакт силовой № " & i + 1 - Test.device.KontACount
                     type(i) = TPA.DialogForms.ValueType.ureal
                 Next
                 all = TPA.DialogForms.Setting(all, head, type, "Усилие нажатия (конечное)")
-                For i As Integer = 0 To Test.device.KontCount - 1
-                    Test.device.НажатиеКонFact(i) = all(i)
+                For i As Integer = 0 To Test.device.KontACount - 1
+                    Test.device.НажатиеКонAFact(i) = all(i)
                 Next
-            End If
-        ElseIf Test.device.KontCount > 1 Then
-            Dim all As Collection = New Collection
-            If Test.device.ControlsParameters.Состояние Then all.Add(Test.device.Состояние(0))
-            If Test.device.ControlsParameters.РастворКонтактов Then all.Add(Test.device.РастворКонтактаFact(0))
-            If Test.device.ControlsParameters.ПровалКонтактов Then all.Add(Test.device.ПровалКонтактаFact(0))
-            If Test.device.ControlsParameters.НажатиеНач Then all.Add(Test.device.НажатиеНачFact(0))
-            If Test.device.ControlsParameters.НажатиеКон Then all.Add(Test.device.НажатиеКонFact(0))
-            Dim head(all.Count - 1) As String
-            Dim type(all.Count - 1) As TPA.DialogForms.ValueType
-            Dim i As Integer = 0
-            If Test.device.ControlsParameters.Состояние Then
-                head(i) = "Состояние контакта"
-                type(i) = TPA.ValueType.bool
-                i += 1
-            End If
-            If Test.device.ControlsParameters.РастворКонтактов Then
-                head(i) = "Раствор контакта"
-                type(i) = TPA.ValueType.ureal
-                i += 1
-            End If
-            If Test.device.ControlsParameters.ПровалКонтактов Then
-                head(i) = "Провал контакта"
-                type(i) = TPA.ValueType.ureal
-                i += 1
-            End If
-            If Test.device.ControlsParameters.НажатиеНач Then
-                head(i) = "Усилие нажатия (начальное)"
-                type(i) = TPA.ValueType.ureal
-                i += 1
-            End If
-            If Test.device.ControlsParameters.НажатиеКон Then
-                head(i) = "Усилие нажатия (конечное)"
-                type(i) = TPA.ValueType.ureal
-                i += 1
-            End If
-            If all.Count > 0 Then all = TPA.DialogForms.Setting(all, head, type, "Контакт")
-            If Test.device.ControlsParameters.Состояние Then
-                Test.device.Состояние(0) = all(1)
-                all.Remove(1)
-            End If
-            If Test.device.ControlsParameters.РастворКонтактов Then
-                Test.device.РастворКонтактаFact(0) = all(1)
-                all.Remove(1)
-            End If
-            If Test.device.ControlsParameters.ПровалКонтактов Then
-                Test.device.ПровалКонтактаFact(0) = all(1)
-                all.Remove(1)
-            End If
-            If Test.device.ControlsParameters.НажатиеНач Then
-                Test.device.НажатиеНачFact(0) = all(1)
-                all.Remove(1)
-            End If
-            If Test.device.ControlsParameters.НажатиеКон Then
-                Test.device.НажатиеКонFact(0) = all(1)
-                all.Remove(1)
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
+                    Test.device.НажатиеКонBFact(i - Test.device.KontACount) = all(i)
+                Next
             End If
         End If
         Operation = Steps.Result
@@ -393,7 +375,7 @@
         End If
         If Operation = Steps.UIcontrol Then
             If uifinish Then
-                If Test.device.ControlsParameters.R Then
+                If Test.device.РабочиеПарамерты.R Then
                     Operation = Steps.RWait
                 Else
                     Operation = Steps.MechanicalControl
@@ -461,7 +443,7 @@
         'действия при генерации нового испытания
         Dim tce As Boolean = TimerControl.Enabled
         TimerControl.Enabled = False
-        Test.device = New Base.DeviceStruct
+        Test.device = New Device()
         firstStart = True
         newReport = True
         Threading.Thread.Sleep(1000)
@@ -480,7 +462,7 @@
             Case Steps.UIWait
                 Operation = Steps.UIcontrol
             Case Steps.UIcontrol
-                Operation = If(Test.device.ControlsParameters.R, Steps.RWait, Steps.MechanicalControl)
+                Operation = If(Test.device.РабочиеПарамерты.R, Steps.RWait, Steps.MechanicalControl)
             Case Steps.RWait
                 Operation = Steps.Rcontrol
             Case Steps.Rcontrol

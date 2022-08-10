@@ -86,6 +86,7 @@
       <DependentUpon>BaseForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Device.vb" />
     <Compile Include="Report.vb" />
     <Compile Include="Test.vb" />
     <Compile Include="Base.vb" />

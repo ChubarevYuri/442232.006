@@ -107,20 +107,17 @@
     ''' <remarks></remarks>
     Private Function CreateDevice(Optional ByVal name As String = "") As Boolean
         CreateDevice = True
-        Dim newObj As Boolean
-        If Base.devices.ObjectInFile(name) Then
-
-            newObj = False
-        Else
-
-            newObj = True
-        End If
+        Dim newObj As Boolean = True
+        If Base.devices.ObjectInFile(name) Then newObj = False
         'форма ввода параметров устройства ниже
-        Dim device As Base.DeviceStruct = If(newObj, New Base.DeviceStruct, Base.ReadDevice(name))
-        Dim oldDevice As Base.DeviceStruct = device
+        'Dim device As Device = If(newObj, New Device(), Base.ReadDevice(name))
+        Dim device As Device = New Device()
+        If Not newObj Then device.Read(name)
+        Dim oldDevice As Device = device
         Dim res As Collection = New Collection()
-        res.Add(device.name)
-        res.Add(device.KontCount)
+        res.Add(device.Name)
+        res.Add(device.KontACount)
+        res.Add(device.KontBCount)
         res.Add(device.U)
         res.Add(device.Uvalid)
         res.Add(device.I)
@@ -129,7 +126,8 @@
         res.Add(device.Rvalid)
         res = TPA.DialogForms.Setting(res, _
                                       New String() {"Модель", _
-                                                    "Количество контактов", _
+                                                    "Количество силовых контактов", _
+                                                    "Количество вспомогательных контактов", _
                                                     "Номинальное напряжение, В", _
                                                     "Допуск по напряжению, В", _
                                                     "Номинальная сила тока, А", _
@@ -140,41 +138,43 @@
                                                                        TPA.ValueType.uint, _
                                                                        TPA.ValueType.uint, _
                                                                        TPA.ValueType.uint, _
+                                                                       TPA.ValueType.uint, _
                                                                        TPA.ValueType.ureal, _
                                                                        TPA.ValueType.ureal, _
                                                                        TPA.ValueType.ureal, _
                                                                        TPA.ValueType.ureal}, _
-                                      "Устройство")
-        device.name = res(1)
-        device.KontCount = res(2)
-        device.U = res(3)
-        device.Uvalid = res(4)
-        device.I = res(5)
-        device.Ivalid = res(6)
-        device.R = res(7)
-        device.Rvalid = res(8)
+                                      "Аппарат")
+        device.Name = res(1)
+        device.KontACount = res(2)
+        device.KontBCount = res(3)
+        device.U = res(4)
+        device.Uvalid = res(5)
+        device.I = res(6)
+        device.Ivalid = res(7)
+        device.R = res(8)
+        device.Rvalid = res(9)
         Try
-            If (newObj And device.name.Length > 0 And (Not Base.devices.ObjectInFile(device.name))) _
-            Or ((Not newObj) And device.name.Length > 0 And (name = device.name Or (Not Base.devices.ObjectInFile(device.name)))) Then
-                For i As Integer = 0 To device.KontCount - 1
+            If (newObj And device.Name.Length > 0 And (Not Base.devices.ObjectInFile(device.Name))) _
+            Or ((Not newObj) And device.Name.Length > 0 And (name = device.Name Or (Not Base.devices.ObjectInFile(device.Name)))) Then
+                If device.KontACount > 0 Then
                     res.Clear()
-                    res.Add(device.РастворКонтактаMin(i))
-                    res.Add(device.РастворКонтактаMax(i))
-                    res.Add(device.ПровалКонтактаMin(i))
-                    res.Add(device.ПровалКонтактаMax(i))
-                    res.Add(device.НажатиеНачMin(i))
-                    res.Add(device.НажатиеНачMax(i))
-                    res.Add(device.НажатиеКонMin(i))
-                    res.Add(device.НажатиеКонMax(i))
+                    res.Add(device.РастворКонтактаAMin)
+                    res.Add(device.РастворКонтактаAMax)
+                    res.Add(device.ПровалКонтактаAMin)
+                    res.Add(device.ПровалКонтактаAMax)
+                    res.Add(device.НажатиеНачAMin)
+                    res.Add(device.НажатиеНачAMax)
+                    res.Add(device.НажатиеКонAMin)
+                    res.Add(device.НажатиеКонAMax)
                     res = TPA.DialogForms.Setting(res, _
                                                   New String() {"Раствор контакта (min), мм", _
                                                                 "Раствор контакта (max), мм", _
                                                                 "Провал контакта (min), мм", _
                                                                 "Провал контакта (max), мм", _
-                                                                "Усилие нажатия начальное (min), кг", _
-                                                                "Усилие нажатия начальное (max), кг", _
-                                                                "Усилие нажатия конечное (min), кг", _
-                                                                "Усилие нажатия конечное (max), кг"}, _
+                                                                "Усилие нажатия начальное (min), Н", _
+                                                                "Усилие нажатия начальное (max), Н", _
+                                                                "Усилие нажатия конечное (min), Н", _
+                                                                "Усилие нажатия конечное (max), Н"}, _
                                                   New TPA.DialogForms.ValueType() {TPA.ValueType.ureal, _
                                                                                    TPA.ValueType.ureal, _
                                                                                    TPA.ValueType.ureal, _
@@ -183,26 +183,62 @@
                                                                                    TPA.ValueType.ureal, _
                                                                                    TPA.ValueType.ureal, _
                                                                                    TPA.ValueType.ureal}, _
-                                                  "Контакт " & i + 1)
-                    device.РастворКонтактаMin(i) = res(1)
-                    device.РастворКонтактаMax(i) = res(2)
-                    device.ПровалКонтактаMin(i) = res(3)
-                    device.ПровалКонтактаMax(i) = res(4)
-                    device.НажатиеНачMin(i) = res(5)
-                    device.НажатиеНачMax(i) = res(6)
-                    device.НажатиеКонMin(i) = res(7)
-                    device.НажатиеКонMax(i) = res(8)
-                Next
-                Base.WriteDevice(device)
+                                                  "Контакт силовой")
+                    device.РастворКонтактаAMin = res(1)
+                    device.РастворКонтактаAMax = res(2)
+                    device.ПровалКонтактаAMin = res(3)
+                    device.ПровалКонтактаAMax = res(4)
+                    device.НажатиеНачAMin = res(5)
+                    device.НажатиеНачAMax = res(6)
+                    device.НажатиеКонAMin = res(7)
+                    device.НажатиеКонAMax = res(8)
+                End If
+                If device.KontBCount > 0 Then
+                    res.Clear()
+                    res.Add(device.РастворКонтактаBMin)
+                    res.Add(device.РастворКонтактаBMax)
+                    res.Add(device.ПровалКонтактаBMin)
+                    res.Add(device.ПровалКонтактаBMax)
+                    res.Add(device.НажатиеНачBMin)
+                    res.Add(device.НажатиеНачBMax)
+                    res.Add(device.НажатиеКонBMin)
+                    res.Add(device.НажатиеКонBMax)
+                    res = TPA.DialogForms.Setting(res, _
+                                                  New String() {"Раствор контакта (min), мм", _
+                                                                "Раствор контакта (max), мм", _
+                                                                "Провал контакта (min), мм", _
+                                                                "Провал контакта (max), мм", _
+                                                                "Усилие нажатия начальное (min), Н", _
+                                                                "Усилие нажатия начальное (max), Н", _
+                                                                "Усилие нажатия конечное (min), Н", _
+                                                                "Усилие нажатия конечное (max), Н"}, _
+                                                  New TPA.DialogForms.ValueType() {TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal, _
+                                                                                   TPA.ValueType.ureal}, _
+                                                  "Контакт вспомогательный")
+                    device.РастворКонтактаBMin = res(1)
+                    device.РастворКонтактаBMax = res(2)
+                    device.ПровалКонтактаBMin = res(3)
+                    device.ПровалКонтактаBMax = res(4)
+                    device.НажатиеНачBMin = res(5)
+                    device.НажатиеНачBMax = res(6)
+                    device.НажатиеКонBMin = res(7)
+                    device.НажатиеКонBMax = res(8)
+                End If
+                device.Save()
             Else
-                If device.name.Length > 0 Then
+                If device.Name.Length > 0 Then
                     TPA.DialogForms.Message("Устройтво уже есть в базе.", "", TPA.DialogForms.MsgType.warning)
                 Else
                     TPA.DialogForms.Message("Невозможно создать устройство без названия.", "", TPA.DialogForms.MsgType.warning)
                 End If
                 Return False
             End If
-
         Catch ex As Exception
             Return False
         End Try
@@ -233,9 +269,8 @@
     ''' </summary>
     ''' <remarks></remarks>
     Public Sub DeviceSelect()
-        'Test.device.name = TPA.DialogForms.Selection(Base.devices.Read(), "Устройство")
-        Test.device = Base.ReadDevice(TPA.DialogForms.Selection(Base.devices.Read(), "Устройство"))
-        If Test.device.name = Nothing Then Test.device.name = ""
+        Test.device.Read(TPA.DialogForms.Selection(Base.devices.Read(), "Аппарат"))
+        If Test.device.Name = Nothing Then Test.device.Name = ""
     End Sub
 
 #End Region
