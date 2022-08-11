@@ -53,6 +53,7 @@ Partial Public Class BaseForm
         Me.DeviceValueModel = New TPA.DeviceValue
         Me.LabelHead = New System.Windows.Forms.Label
         Me.TimerControl = New System.Windows.Forms.Timer
+        Me.ButtonSaveM = New TPA.ButtonNew
         Me.PanelBoth.SuspendLayout()
         Me.PanelBothHead.SuspendLayout()
         Me.PanelControl.SuspendLayout()
@@ -216,6 +217,7 @@ Partial Public Class BaseForm
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.PanelButtons.BackColor = System.Drawing.SystemColors.ControlText
+        Me.PanelButtons.Controls.Add(Me.ButtonSaveM)
         Me.PanelButtons.Controls.Add(Me.ButtonSaveR)
         Me.PanelButtons.Controls.Add(Me.ButtonSaveO)
         Me.PanelButtons.Controls.Add(Me.ButtonSaveI)
@@ -238,10 +240,10 @@ Partial Public Class BaseForm
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonSaveR.Color = System.Drawing.Color.Silver
-        Me.ButtonSaveR.Location = New System.Drawing.Point(301, 25)
+        Me.ButtonSaveR.Location = New System.Drawing.Point(346, 25)
         Me.ButtonSaveR.MyText = "R"
         Me.ButtonSaveR.Name = "ButtonSaveR"
-        Me.ButtonSaveR.Size = New System.Drawing.Size(73, 75)
+        Me.ButtonSaveR.Size = New System.Drawing.Size(67, 75)
         Me.ButtonSaveR.TabIndex = 35
         '
         'ButtonSaveO
@@ -250,10 +252,10 @@ Partial Public Class BaseForm
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonSaveO.Color = System.Drawing.Color.Silver
-        Me.ButtonSaveO.Location = New System.Drawing.Point(226, 25)
+        Me.ButtonSaveO.Location = New System.Drawing.Point(208, 25)
         Me.ButtonSaveO.MyText = "ОТКЛ"
         Me.ButtonSaveO.Name = "ButtonSaveO"
-        Me.ButtonSaveO.Size = New System.Drawing.Size(73, 75)
+        Me.ButtonSaveO.Size = New System.Drawing.Size(67, 75)
         Me.ButtonSaveO.TabIndex = 34
         '
         'ButtonSaveI
@@ -262,10 +264,10 @@ Partial Public Class BaseForm
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonSaveI.Color = System.Drawing.Color.Silver
-        Me.ButtonSaveI.Location = New System.Drawing.Point(151, 25)
+        Me.ButtonSaveI.Location = New System.Drawing.Point(139, 25)
         Me.ButtonSaveI.MyText = "ВКЛ"
         Me.ButtonSaveI.Name = "ButtonSaveI"
-        Me.ButtonSaveI.Size = New System.Drawing.Size(73, 75)
+        Me.ButtonSaveI.Size = New System.Drawing.Size(67, 75)
         Me.ButtonSaveI.TabIndex = 33
         '
         'Label6
@@ -273,9 +275,9 @@ Partial Public Class BaseForm
         Me.Label6.BackColor = System.Drawing.Color.Black
         Me.Label6.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
         Me.Label6.ForeColor = System.Drawing.Color.White
-        Me.Label6.Location = New System.Drawing.Point(151, 0)
+        Me.Label6.Location = New System.Drawing.Point(140, 0)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(225, 25)
+        Me.Label6.Size = New System.Drawing.Size(266, 25)
         Me.Label6.Text = "Записать знач-я"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
@@ -286,10 +288,10 @@ Partial Public Class BaseForm
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonUdown.Color = System.Drawing.Color.Silver
         Me.ButtonUdown.FontSize = 36.0!
-        Me.ButtonUdown.Location = New System.Drawing.Point(75, 25)
+        Me.ButtonUdown.Location = New System.Drawing.Point(68, 25)
         Me.ButtonUdown.MyText = "▼"
         Me.ButtonUdown.Name = "ButtonUdown"
-        Me.ButtonUdown.Size = New System.Drawing.Size(73, 75)
+        Me.ButtonUdown.Size = New System.Drawing.Size(66, 75)
         Me.ButtonUdown.TabIndex = 32
         '
         'ButtonUup
@@ -302,7 +304,7 @@ Partial Public Class BaseForm
         Me.ButtonUup.Location = New System.Drawing.Point(0, 25)
         Me.ButtonUup.MyText = "▲"
         Me.ButtonUup.Name = "ButtonUup"
-        Me.ButtonUup.Size = New System.Drawing.Size(73, 75)
+        Me.ButtonUup.Size = New System.Drawing.Size(66, 75)
         Me.ButtonUup.TabIndex = 31
         '
         'ButtonImax10A
@@ -312,10 +314,10 @@ Partial Public Class BaseForm
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonImax10A.Color = System.Drawing.Color.Silver
         Me.ButtonImax10A.FontSize = 16.0!
-        Me.ButtonImax10A.Location = New System.Drawing.Point(451, 25)
+        Me.ButtonImax10A.Location = New System.Drawing.Point(486, 25)
         Me.ButtonImax10A.MyText = "10A"
         Me.ButtonImax10A.Name = "ButtonImax10A"
-        Me.ButtonImax10A.Size = New System.Drawing.Size(72, 75)
+        Me.ButtonImax10A.Size = New System.Drawing.Size(66, 75)
         Me.ButtonImax10A.TabIndex = 30
         '
         'ButtonImax1A
@@ -325,10 +327,10 @@ Partial Public Class BaseForm
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonImax1A.Color = System.Drawing.Color.Silver
         Me.ButtonImax1A.FontSize = 16.0!
-        Me.ButtonImax1A.Location = New System.Drawing.Point(377, 25)
+        Me.ButtonImax1A.Location = New System.Drawing.Point(418, 25)
         Me.ButtonImax1A.MyText = "1A"
         Me.ButtonImax1A.Name = "ButtonImax1A"
-        Me.ButtonImax1A.Size = New System.Drawing.Size(72, 75)
+        Me.ButtonImax1A.Size = New System.Drawing.Size(66, 75)
         Me.ButtonImax1A.TabIndex = 29
         '
         'ButtonR
@@ -338,10 +340,10 @@ Partial Public Class BaseForm
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonR.Color = System.Drawing.Color.Silver
         Me.ButtonR.FontSize = 16.0!
-        Me.ButtonR.Location = New System.Drawing.Point(526, 25)
+        Me.ButtonR.Location = New System.Drawing.Point(557, 25)
         Me.ButtonR.MyText = "Начать"
         Me.ButtonR.Name = "ButtonR"
-        Me.ButtonR.Size = New System.Drawing.Size(147, 75)
+        Me.ButtonR.Size = New System.Drawing.Size(116, 75)
         Me.ButtonR.TabIndex = 28
         '
         'Label5
@@ -349,9 +351,9 @@ Partial Public Class BaseForm
         Me.Label5.BackColor = System.Drawing.Color.Black
         Me.Label5.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
         Me.Label5.ForeColor = System.Drawing.Color.White
-        Me.Label5.Location = New System.Drawing.Point(377, 0)
+        Me.Label5.Location = New System.Drawing.Point(419, 0)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(148, 25)
+        Me.Label5.Size = New System.Drawing.Size(134, 25)
         Me.Label5.Text = "Предел изм."
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
@@ -362,10 +364,10 @@ Partial Public Class BaseForm
         Me.Label4.BackColor = System.Drawing.Color.Black
         Me.Label4.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
         Me.Label4.ForeColor = System.Drawing.Color.White
-        Me.Label4.Location = New System.Drawing.Point(526, 0)
+        Me.Label4.Location = New System.Drawing.Point(557, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(147, 25)
-        Me.Label4.Text = "Реж. замера R"
+        Me.Label4.Size = New System.Drawing.Size(116, 25)
+        Me.Label4.Text = "Замер R"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'Label3
@@ -375,8 +377,8 @@ Partial Public Class BaseForm
         Me.Label3.ForeColor = System.Drawing.Color.White
         Me.Label3.Location = New System.Drawing.Point(0, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(150, 25)
-        Me.Label3.Text = "Регулировка U"
+        Me.Label3.Size = New System.Drawing.Size(132, 25)
+        Me.Label3.Text = "Рег. U"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'DeviceValueUser
@@ -461,6 +463,18 @@ Partial Public Class BaseForm
         Me.TimerControl.Enabled = True
         Me.TimerControl.Interval = 200
         '
+        'ButtonSaveM
+        '
+        Me.ButtonSaveM.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonSaveM.Color = System.Drawing.Color.Silver
+        Me.ButtonSaveM.Location = New System.Drawing.Point(277, 25)
+        Me.ButtonSaveM.MyText = "МЕХ"
+        Me.ButtonSaveM.Name = "ButtonSaveM"
+        Me.ButtonSaveM.Size = New System.Drawing.Size(67, 75)
+        Me.ButtonSaveM.TabIndex = 40
+        '
         'BaseForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -519,5 +533,6 @@ Partial Public Class BaseForm
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents ButtonSaveM As TPA.ButtonNew
 
 End Class
