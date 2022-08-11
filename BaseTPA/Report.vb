@@ -166,7 +166,7 @@
                                                    TPA.Line.StyleLine.None, _
                                                    True)}, _
                  table, _
-                 New Integer() {3, 1, 1, 1, 1})
+                 New Integer() {13, 4, 5, 4, 5})
         For i As Integer = 0 To device.KontACount - 1
             If device.РабочиеПарамерты.РастворКонтактов Or _
                device.РабочиеПарамерты.ПровалКонтактов Or _
@@ -175,6 +175,13 @@
                device.РабочиеПарамерты.Состояние Then
                 tableNum += 1
                 _report.Line("")
+                Dim rows As Integer = 2 + _
+                                      If(device.РабочиеПарамерты.РастворКонтактов, 1, 0) + _
+                                      If(device.РабочиеПарамерты.ПровалКонтактов, 1, 0) + _
+                                      If(device.РабочиеПарамерты.НажатиеНач, 1, 0) + _
+                                      If(device.РабочиеПарамерты.НажатиеКон, 1, 0) + _
+                                      If(device.РабочиеПарамерты.Состояние, 1, 0)
+                _report.ReserveLines(rows)
                 _report.Line(New TPA.Line(tableNum & ". Контакт силовой № " & (i + 1)))
                 table = New Collection
                 If device.РабочиеПарамерты.Состояние Then
@@ -283,7 +290,7 @@
                                                            TPA.Line.StyleLine.None, _
                                                            True)}, _
                          table, _
-                         New Integer() {3, 1, 1, 1, 1})
+                         New Integer() {13, 4, 5, 4, 5})
             End If
         Next
         For i As Integer = 0 To device.KontBCount - 1
@@ -294,6 +301,13 @@
                device.РабочиеПарамерты.Состояние Then
                 tableNum += 1
                 _report.Line("")
+                Dim rows As Integer = 2 + _
+                                      If(device.РабочиеПарамерты.РастворКонтактов, 1, 0) + _
+                                      If(device.РабочиеПарамерты.ПровалКонтактов, 1, 0) + _
+                                      If(device.РабочиеПарамерты.НажатиеНач, 1, 0) + _
+                                      If(device.РабочиеПарамерты.НажатиеКон, 1, 0) + _
+                                      If(device.РабочиеПарамерты.Состояние, 1, 0)
+                _report.ReserveLines(rows)
                 _report.Line(New TPA.Line(tableNum & ". Контакт вспомогательный № " & (i + 1)))
                 table = New Collection
                 If device.РабочиеПарамерты.Состояние Then
@@ -402,7 +416,7 @@
                                                            TPA.Line.StyleLine.None, _
                                                            True)}, _
                          table, _
-                         New Integer() {3, 1, 1, 1, 1})
+                         New Integer() {13, 4, 5, 4, 5})
             End If
         Next
         'подвал
@@ -419,24 +433,42 @@
                                        New TPA.Line("/", _
                                                     TPA.Line.Align.Center, _
                                                     TPA.Line.StyleLine.FillUnderline)}, _
-                 New Integer() {39, 14, 24})
+                 New Integer() {34, 14, 24})
         _report.Line(New TPA.Line("___ __________ 20___ г.", _
                                   TPA.Line.Align.Right, _
                                   TPA.Line.StyleLine.None))
         _report.Line("")
+        _report.ReserveLines(6)
         _report.Line(New TPA.Line() {New TPA.Line("Заключение: ", _
                                                   TPA.Line.Align.Left, _
                                                   TPA.Line.StyleLine.None), _
                                        New TPA.Line("", _
                                                     TPA.Line.Align.Left, _
                                                     TPA.Line.StyleLine.FillUnderline)}, _
-                 New Integer() {1, 5})
+                 New Integer() {2, 9})
         _report.Line(New TPA.Line("", _
                                   TPA.Line.Align.Left, _
                                   TPA.Line.StyleLine.FillUnderline))
         _report.Line(New TPA.Line("", _
                                   TPA.Line.Align.Left, _
                                   TPA.Line.StyleLine.FillUnderline))
+        _report.Line("")
+        _report.Line(New TPA.Line() {New TPA.Line("", _
+                                                  TPA.Line.Align.Left, _
+                                                  TPA.Line.StyleLine.None), _
+                                       New TPA.Line("", _
+                                           TPA.Line.Align.Center, _
+                                           TPA.Line.StyleLine.FillUnderline), _
+                                       New TPA.Line("/ ", _
+                                                    TPA.Line.Align.Left, _
+                                                    TPA.Line.StyleLine.FillUnderline), _
+                                       New TPA.Line("/", _
+                                                    TPA.Line.Align.Center, _
+                                                    TPA.Line.StyleLine.FillUnderline)}, _
+                 New Integer() {34, 14, 24})
+        _report.Line(New TPA.Line("___ __________ 20___ г.", _
+                                  TPA.Line.Align.Right, _
+                                  TPA.Line.StyleLine.None))
     End Sub
 
 
@@ -513,6 +545,7 @@
     ''' <param name="num"></param>
     ''' <remarks></remarks>
     Public Sub Show(ByVal num As Integer)
+        TPA.DialogForms.WaitFormStart()
         Dim dict As Dictionary(Of String, String) = Base.reports.Read(num)
         If dict.Count > 0 Then
             Dim key As String
@@ -575,16 +608,16 @@
             End Try
             key = "Name"
             Try
-                device.name = dict(key)
+                device.Name = dict(key)
             Catch ex As Exception
-                device.name = ""
+                device.Name = ""
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
             key = "Num"
             Try
-                device.num = dict(key)
+                device.Num = dict(key)
             Catch ex As Exception
-                device.num = ""
+                device.Num = ""
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
             key = "U"
@@ -633,7 +666,7 @@
             Try
                 device.II = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.II =0
+                device.II = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
             key = "IO"
@@ -864,9 +897,11 @@
                     TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
                 End Try
             Next
-            Create(readNum, device, user, timeStart)
+            Create(num, device, user, timeStart)
+            TPA.WaitFormStop()
             TPA.DialogForms.Report(_report)
         End If
+        TPA.WaitFormStop()
     End Sub
 
     ''' <summary>

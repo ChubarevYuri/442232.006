@@ -461,7 +461,7 @@
                          0))
         End Get
         Set(ByVal value As Double)
-            _РастворКонтактаAMax = If(value = Nothing, Double.MaxValue, If(value > 0, value, Double.MaxValue))
+            _РастворКонтактаAMax = If(value = Nothing, 0, If(value > 0, value, 0))
         End Set
     End Property
     ''' <summary>
@@ -542,7 +542,7 @@
                          0))
         End Get
         Set(ByVal value As Double)
-            _РастворКонтактаBMax = If(value = Nothing, Double.MaxValue, If(value > 0, value, Double.MaxValue))
+            _РастворКонтактаBMax = If(value = Nothing, 0, If(value > 0, value, 0))
         End Set
     End Property
     ''' <summary>
@@ -623,7 +623,7 @@
                          0))
         End Get
         Set(ByVal value As Double)
-            _ПровалКонтактаAMax = If(value = Nothing, Double.MaxValue, If(value > 0, value, Double.MaxValue))
+            _ПровалКонтактаAMax = If(value = Nothing, 0, If(value > 0, value, 0))
         End Set
     End Property
     ''' <summary>
@@ -704,7 +704,7 @@
                          0))
         End Get
         Set(ByVal value As Double)
-            _ПровалКонтактаBMax = If(value = Nothing, Double.MaxValue, If(value > 0, value, Double.MaxValue))
+            _ПровалКонтактаBMax = If(value = Nothing, 0, If(value > 0, value, 0))
         End Set
     End Property
     ''' <summary>
@@ -785,7 +785,7 @@
                          0))
         End Get
         Set(ByVal value As Double)
-            _НажатиеНачAMax = If(value = Nothing, Double.MaxValue, If(value > 0, value, Double.MaxValue))
+            _НажатиеНачAMax = If(value = Nothing, 0, If(value > 0, value, 0))
         End Set
     End Property
     ''' <summary>
@@ -866,7 +866,7 @@
                          0))
         End Get
         Set(ByVal value As Double)
-            _НажатиеНачBMax = If(value = Nothing, Double.MaxValue, If(value > 0, value, Double.MaxValue))
+            _НажатиеНачBMax = If(value = Nothing, 0, If(value > 0, value, 0))
         End Set
     End Property
     ''' <summary>
@@ -947,7 +947,7 @@
                          0))
         End Get
         Set(ByVal value As Double)
-            _НажатиеКонAMax = If(value = Nothing, Double.MaxValue, If(value > 0, value, Double.MaxValue))
+            _НажатиеКонAMax = If(value = Nothing, 0, If(value > 0, value, 0))
         End Set
     End Property
     ''' <summary>
@@ -1028,7 +1028,7 @@
                          0))
         End Get
         Set(ByVal value As Double)
-            _НажатиеКонBMax = If(value = Nothing, Double.MaxValue, If(value > 0, value, Double.MaxValue))
+            _НажатиеКонBMax = If(value = Nothing, 0, If(value > 0, value, 0))
         End Set
     End Property
     ''' <summary>
@@ -1205,6 +1205,11 @@
     End Sub
     Public Sub Read(ByVal _Name_ As String)
         Dim dict = devices.Read(_Name_)
+        Using f = New System.IO.StreamWriter(TPA.BasePath & "dict.txt")
+            For Each j In dict
+                f.WriteLine(j.Key & " [" & j.Value & "]")
+            Next
+        End Using
         Name = _Name_
         Try
             U = Convert.ToInt32(dict("U"))
@@ -1247,82 +1252,82 @@
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[KontBCount]")
         End Try
         Try
-            РастворКонтактаAMin = Convert.ToInt32(dict("РастворКонтактаAMin"))
+            РастворКонтактаAMin = Convert.ToDouble(dict("РастворКонтактаAMin"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РастворКонтактаAMin]")
         End Try
         Try
-            РастворКонтактаAMax = Convert.ToInt32(dict("РастворКонтактаAMax"))
+            РастворКонтактаAMax = Convert.ToDouble(dict("РастворКонтактаAMax"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РастворКонтактаAMax]")
         End Try
         Try
-            ПровалКонтактаAMin = Convert.ToInt32(dict("ПровалКонтактаAMin"))
+            ПровалКонтактаAMin = Convert.ToDouble(dict("ПровалКонтактаAMin"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[ПровалКонтактаAMin]")
         End Try
         Try
-            ПровалКонтактаAMax = Convert.ToInt32(dict("ПровалКонтактаAMax"))
+            ПровалКонтактаAMax = Convert.ToDouble(dict("ПровалКонтактаAMax"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[ПровалКонтактаAMax]")
         End Try
         Try
-            НажатиеНачAMin = Convert.ToInt32(dict("НажатиеНачAMin"))
+            НажатиеНачAMin = Convert.ToDouble(dict("НажатиеНачAMin"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеНачAMin]")
         End Try
         Try
-            НажатиеНачAMax = Convert.ToInt32(dict("НажатиеНачAMax"))
+            НажатиеНачAMax = Convert.ToDouble(dict("НажатиеНачAMax"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеНачAMax]")
         End Try
         Try
-            НажатиеКонAMin = Convert.ToInt32(dict("НажатиеКонAMin"))
+            НажатиеКонAMin = Convert.ToDouble(dict("НажатиеКонAMin"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеКонAMin]")
         End Try
         Try
-            НажатиеКонAMax = Convert.ToInt32(dict("НажатиеКонAMax"))
+            НажатиеКонAMax = Convert.ToDouble(dict("НажатиеКонAMax"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеКонAMax]")
         End Try
         Try
-            РастворКонтактаBMin = Convert.ToInt32(dict("РастворКонтактаBMin"))
+            РастворКонтактаBMin = Convert.ToDouble(dict("РастворКонтактаBMin"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РастворКонтактаBMin]")
         End Try
         Try
-            РастворКонтактаBMax = Convert.ToInt32(dict("РастворКонтактаBMax"))
+            РастворКонтактаBMax = Convert.ToDouble(dict("РастворКонтактаBMax"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РастворКонтактаBMax]")
         End Try
         Try
-            ПровалКонтактаBMin = Convert.ToInt32(dict("ПровалКонтактаBMin"))
+            ПровалКонтактаBMin = Convert.ToDouble(dict("ПровалКонтактаBMin"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[ПровалКонтактаBMin]")
         End Try
         Try
-            ПровалКонтактаBMax = Convert.ToInt32(dict("ПровалКонтактаBMax"))
+            ПровалКонтактаBMax = Convert.ToDouble(dict("ПровалКонтактаBMax"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[ПровалКонтактаBMax]")
         End Try
         Try
-            НажатиеНачBMin = Convert.ToInt32(dict("НажатиеНачBMin"))
+            НажатиеНачBMin = Convert.ToDouble(dict("НажатиеНачBMin"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеНачBMin]")
         End Try
         Try
-            НажатиеНачBMax = Convert.ToInt32(dict("НажатиеНачBMax"))
+            НажатиеНачBMax = Convert.ToDouble(dict("НажатиеНачBMax"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеНачBMax]")
         End Try
         Try
-            НажатиеКонBMin = Convert.ToInt32(dict("НажатиеКонBMin"))
+            НажатиеКонBMin = Convert.ToDouble(dict("НажатиеКонBMin"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеКонBMin]")
         End Try
         Try
-            НажатиеКонBMax = Convert.ToInt32(dict("НажатиеКонBMax"))
+            НажатиеКонBMax = Convert.ToDouble(dict("НажатиеКонBMax"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеКонBMax]")
         End Try
