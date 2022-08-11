@@ -286,7 +286,7 @@
                          New Integer() {3, 1, 1, 1, 1})
             End If
         Next
-        For i As Integer = 0 To device.KontACount - 1
+        For i As Integer = 0 To device.KontBCount - 1
             If device.РабочиеПарамерты.РастворКонтактов Or _
                device.РабочиеПарамерты.ПровалКонтактов Or _
                device.РабочиеПарамерты.НажатиеНач Or _

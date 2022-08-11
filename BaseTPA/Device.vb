@@ -474,8 +474,8 @@
         Get
             Return If(РастворКонтактаAMax > 0, _
                       If(РастворКонтактаAMin > 0, _
-                         РастворКонтактаAMin & " .. " & РастворКонтактаAMax, _
-                         "≥" & РастворКонтактаAMax), _
+                         РастворКонтактаAMin.ToString(doubleformat) & " .. " & РастворКонтактаAMax.ToString(doubleformat), _
+                         "≥" & РастворКонтактаAMax.ToString(doubleformat)), _
                       "")
         End Get
     End Property
@@ -555,8 +555,8 @@
         Get
             Return If(РастворКонтактаBMax > 0, _
                       If(РастворКонтактаBMin > 0, _
-                         РастворКонтактаBMin & " .. " & РастворКонтактаBMax, _
-                         "≥" & РастворКонтактаBMax), _
+                         РастворКонтактаBMin.ToString(doubleformat) & " .. " & РастворКонтактаBMax.ToString(doubleformat), _
+                         "≥" & РастворКонтактаBMax.ToString(doubleformat)), _
                       "")
         End Get
     End Property
@@ -636,8 +636,8 @@
         Get
             Return If(ПровалКонтактаAMax > 0, _
                       If(ПровалКонтактаAMin > 0, _
-                         ПровалКонтактаAMin & " .. " & ПровалКонтактаAMax, _
-                         "≥" & ПровалКонтактаAMax), _
+                         ПровалКонтактаAMin.ToString(doubleformat) & " .. " & ПровалКонтактаAMax.ToString(doubleformat), _
+                         "≥" & ПровалКонтактаAMax.ToString(doubleformat)), _
                       "")
         End Get
     End Property
@@ -717,8 +717,8 @@
         Get
             Return If(ПровалКонтактаBMax > 0, _
                       If(ПровалКонтактаBMin > 0, _
-                         ПровалКонтактаBMin & " .. " & ПровалКонтактаBMax, _
-                         "≥" & ПровалКонтактаBMax), _
+                         ПровалКонтактаBMin.ToString(doubleformat) & " .. " & ПровалКонтактаBMax.ToString(doubleformat), _
+                         "≥" & ПровалКонтактаBMax.ToString(doubleformat)), _
                       "")
         End Get
     End Property
@@ -798,8 +798,8 @@
         Get
             Return If(НажатиеНачAMax > 0, _
                       If(НажатиеНачAMin > 0, _
-                         НажатиеНачAMin & " .. " & НажатиеНачAMax, _
-                         "≥" & НажатиеНачAMax), _
+                         НажатиеНачAMin.ToString(doubleformat) & " .. " & НажатиеНачAMax.ToString(doubleformat), _
+                         "≥" & НажатиеНачAMax.ToString(doubleformat)), _
                       "")
         End Get
     End Property
@@ -879,8 +879,8 @@
         Get
             Return If(НажатиеНачBMax > 0, _
                       If(НажатиеНачBMin > 0, _
-                         НажатиеНачBMin & " .. " & НажатиеНачBMax, _
-                         "≥" & НажатиеНачBMax), _
+                         НажатиеНачBMin.ToString(doubleformat) & " .. " & НажатиеНачBMax.ToString(doubleformat), _
+                         "≥" & НажатиеНачBMax.ToString(doubleformat)), _
                       "")
         End Get
     End Property
@@ -960,8 +960,8 @@
         Get
             Return If(НажатиеКонAMax > 0, _
                       If(НажатиеКонAMin > 0, _
-                         НажатиеКонAMin & " .. " & НажатиеКонAMax, _
-                         "≥" & НажатиеКонAMax), _
+                         НажатиеКонAMin.ToString(doubleformat) & " .. " & НажатиеКонAMax.ToString(doubleformat), _
+                         "≥" & НажатиеКонAMax.ToString(doubleformat)), _
                       "")
         End Get
     End Property
@@ -1041,8 +1041,8 @@
         Get
             Return If(НажатиеКонBMax > 0, _
                       If(НажатиеКонBMin > 0, _
-                         НажатиеКонBMin & " .. " & НажатиеКонBMax, _
-                         "≥" & НажатиеКонBMax), _
+                         НажатиеКонBMin.ToString(doubleformat) & " .. " & НажатиеКонBMax.ToString(doubleformat), _
+                         "≥" & НажатиеКонBMax.ToString(doubleformat)), _
                       "")
         End Get
     End Property

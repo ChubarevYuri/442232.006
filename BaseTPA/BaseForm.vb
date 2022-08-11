@@ -108,7 +108,7 @@
                     firstStart = False
                     R = 0
                     U = 0
-                    Operation = Steps.UIWait
+                    Operation = Steps.MechanicalControl
                 Else
                     Operation = Steps.Sleep
                 End If
@@ -235,7 +235,7 @@
                     head(i) = "Контакт силовой № " & i + 1
                     type(i) = TPA.DialogForms.ValueType.ureal
                 Next
-                For i As Integer = Test.device.KontACount To Test.device.KontACount - 1
+                For i As Integer = Test.device.KontACount To Test.device.KontACount + Test.device.KontBCount - 1
                     all(i) = Test.device.НажатиеНачAFact(i - Test.device.KontACount)
                     head(i) = "Контакт вспомогательный № " & i + 1 - Test.device.KontACount
                     type(i) = TPA.DialogForms.ValueType.ureal
