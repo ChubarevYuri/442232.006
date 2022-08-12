@@ -41,6 +41,8 @@
             _UImeter.ОПРОСAin1 = True
             _UImeter.ОПРОСAin2 = True
             _UImeter.ОПРОСAin3 = True
+            U = 0
+            A1using = False
             TPA.DeviseInspection.addDevice(_UImeter)
             _firstStartInspection = False
         End If
@@ -50,7 +52,7 @@
 
 #Region "R"
     Friend R As Double = 0
-    Private _Rmeter As TPA.КМФ_1115_омметр = New TPA.КМФ_1115_омметр(_RmeterAddres, _RmeterName, writeTimeout:=200)
+    Private _Rmeter As TPA.КМФ_1115_омметр = New TPA.КМФ_1115_омметр(_RmeterAddres, _RmeterName, writeTimeout:=100, readTimeout:=200)
     Private ReadOnly Property _RmeterAddres() As Integer
         Get
             Try

@@ -106,9 +106,7 @@
                     Test.device.РабочиеПарамерты.НажатиеНач = bool(4)
                     Test.device.РабочиеПарамерты.НажатиеКон = bool(5)
                     firstStart = False
-                    R = 0
-                    U = 0
-                    Operation = Steps.MechanicalControl
+                    Operation = Steps.UIWait
                 Else
                     Operation = Steps.Sleep
                 End If
@@ -116,8 +114,6 @@
                 Operation = Steps.Sleep
             End If
         Else
-            R = 0
-            U = 0
             Operation = Steps.UIWait
         End If
     End Sub
@@ -127,7 +123,9 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub OperationUIWait()
-        Test.A1using = If(Test.device.name.Length > 0 And Test.device.I + Test.device.Ivalid < 9, True, False)
+        Test.A1using = Test.device.Imax > 0 And Test.device.Imax < 9.5
+        U = 0
+        Test.RreadStop()
     End Sub
 
     ''' <summary>
@@ -135,7 +133,6 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub OperatonUIControl()
-        Test.U = 0
         uifinish = False
     End Sub
 
@@ -144,7 +141,7 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub OperationRWait()
-
+        R = 0
     End Sub
 
     ''' <summary>
@@ -153,6 +150,7 @@
     ''' <remarks></remarks>
     Private Sub OperatonRControl()
         U = 0
+        Test.A1using = False
         Threading.Thread.Sleep(500)
         Test.RreadStart()
     End Sub
@@ -162,6 +160,9 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub OperationMechanicalControl()
+        Test.RreadStop()
+        U = 0
+        Test.A1using = False
         MechanicalVals()
         Operation = Steps.Result
     End Sub
@@ -171,6 +172,8 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub OperationResult()
+        U = 0
+        Test.A1using = False
         TPA.DialogForms.WaitFormStart()
         Report.Save(Report.readNum, Test.device, Test.user, Test.timeStart)
         newReport = False
@@ -259,6 +262,8 @@
         ButtonR.Color = If(ButtonR_Click_Bool, Color.LimeGreen, Color.Silver)
         ButtonImax1A.Color = If(Test.A1using, Color.LimeGreen, Color.Silver)
         ButtonImax10A.Color = If(Test.A1using, Color.Silver, Color.LimeGreen)
+        ButtonSaveI.Color = If(Test.IO = IOstat.Close_Open Or Test.IO = IOstat.Open_Open, Color.LimeGreen, Color.Silver)
+        ButtonSaveO.Color = If(Test.IO = IOstat.Close_Open Or Test.IO = IOstat.Open_Open, Color.Silver, Color.LimeGreen)
         'записи в тест
         If Operation = Steps.Rcontrol And Test.Ron And Test.R > 0 And Test.R <> Integer.MaxValue Then
             Test.device.Rfact = R

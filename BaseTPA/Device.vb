@@ -369,11 +369,11 @@
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Property Rfact() As Integer
+    Public Property Rfact() As Double
         Get
             Return If(_Rfact = Nothing, 0, If(_Rfact > 0, _Rfact, 0))
         End Get
-        Set(ByVal value As Integer)
+        Set(ByVal value As Double)
             _Rfact = If(value = Nothing, 0, If(value > 0, value, 0))
         End Set
     End Property
