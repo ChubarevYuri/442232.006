@@ -1205,11 +1205,6 @@
     End Sub
     Public Sub Read(ByVal _Name_ As String)
         Dim dict = devices.Read(_Name_)
-        Using f = New System.IO.StreamWriter(TPA.BasePath & "dict.txt")
-            For Each j In dict
-                f.WriteLine(j.Key & " [" & j.Value & "]")
-            Next
-        End Using
         Name = _Name_
         Try
             U = Convert.ToInt32(dict("U"))

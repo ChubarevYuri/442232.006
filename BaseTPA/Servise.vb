@@ -81,18 +81,21 @@
             End Try
         Next
         Do
-            TPA.DialogForms.WaitFormStop()
             If list.Count > 0 Then
+                TPA.DialogForms.WaitFormStart()
                 local = TPA.DialogForms.Correct(list.Keys.ToArray, head, False, True)
+                TPA.DialogForms.WaitFormStart()
                 Select Case local.FormResult
                     Case TPA.resultOfCorrect.Add
                     Case TPA.resultOfCorrect.Correct
                         Report.Show(list.Item(local.Elem))
                     Case TPA.resultOfCorrect.Del
                         Base.reports.Delete(list.Item(local.Elem))
+                        list.Remove(local.Elem)
                 End Select
             End If
         Loop While local.FormResult <> TPA.resultOfCorrect.OK And local.FormResult <> TPA.resultOfCorrect.Cancel
+        TPA.DialogForms.WaitFormStop()
     End Sub
 
 #End Region
@@ -106,6 +109,7 @@
     ''' <returns></returns>
     ''' <remarks></remarks>
     Private Function CreateDevice(Optional ByVal name As String = "") As Boolean
+        TPA.WaitFormStart()
         CreateDevice = True
         Dim newObj As Boolean = True
         If Base.devices.ObjectInFile(name) Then newObj = False
@@ -252,7 +256,9 @@
     Private Sub SettingDevice(ByRef head As String)
         Dim local As TPA.DialogForms.CorrectAnswer
         Do
+            TPA.DialogForms.WaitFormStart()
             local = TPA.DialogForms.Correct(Base.devices.Read(), head)
+            TPA.DialogForms.WaitFormStart()
             Select Case local.FormResult
                 Case TPA.resultOfCorrect.Add
                     CreateDevice()
@@ -262,6 +268,7 @@
                     Base.devices.Delete(local.Elem)
             End Select
         Loop While local.FormResult <> TPA.resultOfCorrect.OK And local.FormResult <> TPA.resultOfCorrect.Cancel
+        TPA.DialogForms.WaitFormStop()
     End Sub
 
     ''' <summary>
@@ -285,7 +292,9 @@
     Private Sub SettingUser(ByRef head As String)
         Dim local As TPA.DialogForms.CorrectAnswer
         Do
+            TPA.DialogForms.WaitFormStart()
             local = TPA.DialogForms.Correct(Base.users.Read(), head)
+            TPA.DialogForms.WaitFormStart()
             Select Case local.FormResult
                 Case TPA.resultOfCorrect.Add
                     CreateUser()
@@ -295,6 +304,7 @@
                     Base.users.Delete(local.Elem)
             End Select
         Loop While local.FormResult <> TPA.resultOfCorrect.OK And local.FormResult <> TPA.resultOfCorrect.Cancel
+        TPA.DialogForms.WaitFormStop()
     End Sub
 
     ''' <summary>
