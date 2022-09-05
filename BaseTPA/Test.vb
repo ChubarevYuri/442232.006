@@ -1,24 +1,12 @@
 ﻿Module Test
     Public user As String = ""
+    Public master As String = ""
     Public device As Device = New Device()
     Public timeStart As DateTime = Now
 
-    ''' <summary>
-    ''' Настройка предела измерения тока
-    ''' </summary>
-    ''' <param name="limit">Максимальная сила тока</param>
-    ''' <returns>Сообщение о выполнении команды</returns>
-    ''' <remarks></remarks>
-    Public Function ILimit(ByVal limit As Double) As Boolean
-        If limit <= 1 Then
-        Else
-        End If
-        Return True
-    End Function
-
 #Region "UI"
 
-    Private _UImeter As TPA.БФУ_GB106v2 = New TPA.БФУ_GB106v2(_UImeterAddres, _UImeterName, writeTimeout:=200)
+    Friend _UImeter As TPA.БФУ_GB106v2 = New TPA.БФУ_GB106v2(_UImeterAddres, _UImeterName, writeTimeout:=200)
     Private ReadOnly Property _UImeterAddres() As Integer
         Get
             Try
@@ -38,9 +26,9 @@
     Public Sub start()
         If _firstStartInspection Then
             _UImeter.ОПРОСдискреты = True
-            _UImeter.ОПРОСAin1 = True
             _UImeter.ОПРОСAin2 = True
             _UImeter.ОПРОСAin3 = True
+            _UImeter.ОПРОСAin4 = True
             U = 0
             A1using = False
             TPA.DeviseInspection.addDevice(_UImeter)
@@ -52,7 +40,7 @@
 
 #Region "R"
     Friend R As Double = 0
-    Private _Rmeter As TPA.КМФ_1115_омметр = New TPA.КМФ_1115_омметр(_RmeterAddres, _RmeterName, writeTimeout:=100, readTimeout:=200)
+    Private _Rmeter As TPA.КМФ_1115_омметр = New TPA.КМФ_1115_омметр(_RmeterAddres, _RmeterName, writeTimeout:=100, readTimeout:=500)
     Private ReadOnly Property _RmeterAddres() As Integer
         Get
             Try
@@ -75,18 +63,20 @@
     ''' <remarks></remarks>
     Private Sub Rread()
         Do
-            Dim res
+            Threading.Thread.Sleep(50)
             Try
-                res = _Rmeter.val
-                If res = Nothing Then
+                Dim res = _Rmeter.val(2000)
+                If res = Double.MinValue Then
+                    BaseForm.TimerControl.Enabled = False
                     TPA.DialogForms.Message("Перед измерением сопротивления отключите источник от устройства!", "АВАРИЯ", TPA.MsgType.except)
                     TPA.Log.Print(TPA.Rank.MESSAGE, "Замер сопротивления при подключенном напряжении")
+                    BaseForm.TimerControl.Enabled = True
+                ElseIf res = -1 Then
+                    TPA.Log.Print(TPA.Rank.MESSAGE, "Замер сопротивления не выполнен")
+                ElseIf res = Double.MaxValue Then
+                    R = 50000
                 Else
-                    If res = Integer.MinValue Then TPA.Log.Print(TPA.Rank.WARNING, "Сопротивление не прочитано, наверное недостаточно времени")
-                    If res > 0 And res < Int32.MaxValue Then
-                        R = res
-                    Else
-                    End If
+                    R = res
                 End If
             Catch ex As Exception
                 TPA.Log.Print(TPA.Rank.EXCEPT, "Ошибка чтения R [Test Sub Rread()]")
@@ -113,6 +103,10 @@
     ''' <remarks></remarks>
     Public Sub RreadStart()
         If Not RreadOn Then
+            U = 0
+            R = 0
+            Threading.Thread.Sleep(300)
+            _Rmeter.Rобр = New Double() {Base.Rобр1, Base.Rобр2, Base.Rобр3, Base.Rобр4}
             TPA.DeviseInspection.stopInspection()
             thread = New Threading.Thread(AddressOf Rread)
             thread.Priority = Threading.ThreadPriority.Normal
@@ -130,6 +124,7 @@
             thread.Abort()
             RreadOn = False
             start()
+            U = _Urec
         End If
     End Sub
 
@@ -191,25 +186,37 @@
     ''' понизить напряжение
     ''' </summary>
     ''' <remarks></remarks>
-    Public Sub UrecBoth()
+    Public Sub UrecBoth(Optional ByVal mech As Boolean = False)
+        Dim corr As Double = 0
         Try
-            Urec -= Convert.ToDouble(setting.Read("СТЕНД", "U rec step"))
+            corr = Convert.ToDouble(setting.Read("СТЕНД", "U rec step (*)"))
+            Try
+                corr *= If(mech, Convert.ToDouble(setting.Read("СТЕНД", "U rec mech")), Convert.ToDouble(setting.Read("СТЕНД", "U rec auto")))
+            Catch ex As Exception
+
+            End Try
         Catch ex As Exception
-            Urec -= 1
+            corr = 1
         End Try
-        U = Urec
+        Urec -= corr
     End Sub
     ''' <summary>
     ''' повысить напряжение
     ''' </summary>
     ''' <remarks></remarks>
-    Public Sub UrecTop()
+    Public Sub UrecTop(Optional ByVal mech As Boolean = False)
+        Dim corr As Double = 0
         Try
-            Urec += Convert.ToDouble(setting.Read("СТЕНД", "U rec step"))
+            corr = Convert.ToDouble(setting.Read("СТЕНД", "U rec step (*)"))
+            Try
+                corr *= If(mech, Convert.ToDouble(setting.Read("СТЕНД", "U rec mech")), Convert.ToDouble(setting.Read("СТЕНД", "U rec auto")))
+            Catch ex As Exception
+
+            End Try
         Catch ex As Exception
-            Urec += 1
+            corr = 1
         End Try
-        U = Urec
+        Urec += corr
     End Sub
     ''' <summary>
     ''' Напряжение
@@ -217,33 +224,42 @@
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Property U() As Integer
+    Public Property U() As Double
         Get
             Try
                 Dim res As TPA.DeviseInspection.ResultType = TPA.DeviseInspection.result(_UImeterAddres)
                 If res.err.Length > 0 Then TPA.Log.Print(TPA.Rank.EXCEPT, res.err)
                 Dim answer As Dictionary(Of String, Object) = res.answer
-                Dim Udouble As Double = answer(setting.Read("СТЕНД", "Uchannel"))
+                U = answer(setting.Read("СТЕНД", "Uchannel"))
                 Try
-                    Udouble *= Convert.ToDouble(setting.Read("СТЕНД", "U (*)"))
+                    U *= Convert.ToDouble(setting.Read("СТЕНД", "U (*)"))
                 Catch ex As Exception
                 End Try
                 Try
-                    Udouble += Convert.ToDouble(setting.Read("СТЕНД", "U (+)"))
+                    U += Convert.ToDouble(setting.Read("СТЕНД", "U (+)"))
                 Catch ex As Exception
                 End Try
-                U = Udouble
             Catch ex As Exception
-                TPA.Log.Print(TPA.Rank.EXCEPT, "Ошибка чтения U [Test Property U() As Integer]")
+                TPA.Log.Print(TPA.Rank.EXCEPT, "Ошибка чтения U")
                 U = 0
             End Try
         End Get
-        Set(ByVal value As Integer)
-
+        Set(ByVal value As Double)
             TPA.Log.Print(TPA.Rank.OK, "U(0..4095)=" & value)
-            TPA.DeviseInspection.AddCommand(_UImeter.Регулятор(value))
+            If value > 0 Then
+                If Not _open7 Then
+                    TPA.DeviseInspection.AddCommand(_UImeter.out7(True))
+                    _open7 = True
+                End If
+            Else
+                TPA.DeviseInspection.AddCommand(_UImeter.out7(False))
+                _open7 = False
+            End If
+            TPA.DeviseInspection.AddCommand(_UImeter.Регулятор(Convert.ToInt32(value)))
         End Set
     End Property
+
+    Private _open7 As Boolean = False
 
     Public Enum IOstat
         Close_Close
@@ -252,13 +268,13 @@
         Open_Open
     End Enum
 
-    Private _IO As Boolean = False
+    Friend _IO As Boolean = False
     ''' <summary>
     ''' состояние контакта в текущий момент
     ''' </summary>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Private Function IOnow() As Boolean
+    Public Function IOnow() As Boolean
         Try
             Dim res As TPA.DeviseInspection.ResultType = TPA.DeviseInspection.result(_UImeterAddres)
             If res.err.Length > 0 Then TPA.Log.Print(TPA.Rank.EXCEPT, res.err)

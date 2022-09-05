@@ -87,7 +87,24 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Device.vb" />
+    <Compile Include="DeviceForm.Designer.vb">
+      <DependentUpon>DeviceForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DeviceForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OperationsForm.Designer.vb">
+      <DependentUpon>OperationsForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OperationsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Report.vb" />
+    <Compile Include="Resource.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Include="Test.vb" />
     <Compile Include="Base.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -102,17 +119,34 @@
     <EmbeddedResource Include="BaseForm.resx">
       <DependentUpon>BaseForm.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DeviceForm.resx">
+      <DependentUpon>DeviceForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="OperationsForm.resx">
+      <DependentUpon>OperationsForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource.resx">
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="property\setting.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\false.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\true.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.VisualBasic.targets" />
   <ProjectExtensions>

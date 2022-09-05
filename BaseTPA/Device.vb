@@ -1,37 +1,67 @@
 ﻿Public Class Device
     Private _name As String = ""
     Private _num As String = ""
-    Private _U As Integer = 0
-    Private _Uvalid As Integer = 0
-    Private _UI As Integer = 0
-    Private _UO As Integer = 0
-    Private _I As Double = 0
-    Private _Ivalid As Double = 0
-    Private _II As Integer = 0
-    Private _IO As Integer = 0
-    Private _R As Double = 0
-    Private _Rvalid As Double = 0
-    Private _Rfact As Double = 0
+    Private _U As Double = 0
+    ''' <summary>
+    ''' Напряжение включения
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Ui As New TPA.ParamValue
+    ''' <summary>
+    ''' напряжение выключения
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Uo As New TPA.ParamValue
+    ''' <summary>
+    ''' Напряжение номинальное
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Uwork As New TPA.ParamValue
+    ''' <summary>
+    ''' Ток включения
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Ii As New TPA.ParamValue
+    ''' <summary>
+    ''' Ток выключения
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Io As New TPA.ParamValue
+    ''' <summary>
+    ''' Сопротивление
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public R As New TPA.ParamValue
     Private _KontACount As Integer = 0
     Private _KontBCount As Integer = 0
+    Private _KontCCount As Integer = 0
     Private _KontsA As List(Of Контакт) = New List(Of Контакт)
     Private _KontsB As List(Of Контакт) = New List(Of Контакт)
+    Private _KontsC As List(Of Контакт) = New List(Of Контакт)
     Private _РастворКонтактаAMin As Double = 0
     Private _РастворКонтактаAMax As Double = 0
     Private _РастворКонтактаBMin As Double = 0
     Private _РастворКонтактаBMax As Double = 0
+    Private _РастворКонтактаCMin As Double = 0
+    Private _РастворКонтактаCMax As Double = 0
     Private _ПровалКонтактаAMin As Double = 0
     Private _ПровалКонтактаAMax As Double = 0
     Private _ПровалКонтактаBMin As Double = 0
     Private _ПровалКонтактаBMax As Double = 0
+    Private _ПровалКонтактаCMin As Double = 0
+    Private _ПровалКонтактаCMax As Double = 0
     Private _НажатиеНачAMin As Double = 0
     Private _НажатиеНачAMax As Double = 0
     Private _НажатиеНачBMin As Double = 0
     Private _НажатиеНачBMax As Double = 0
+    Private _НажатиеНачCMin As Double = 0
+    Private _НажатиеНачCMax As Double = 0
     Private _НажатиеКонAMin As Double = 0
     Private _НажатиеКонAMax As Double = 0
     Private _НажатиеКонBMin As Double = 0
     Private _НажатиеКонBMax As Double = 0
+    Private _НажатиеКонCMin As Double = 0
+    Private _НажатиеКонCMax As Double = 0
     Public РабочиеПарамерты As coltrolStruct = New coltrolStruct()
     ''' <summary>
     ''' Модель аппарата
@@ -62,290 +92,208 @@
         End Set
     End Property
     ''' <summary>
-    ''' Рабочее напряжение
+    ''' Номинальное напряжение
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Property U() As Integer
+    Public Property U() As Double
         Get
-            Return If(_U = Nothing, 0, If(_U > 0, _U, 0))
-        End Get
-        Set(ByVal value As Integer)
-            _U = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
-    End Property
-    ''' <summary>
-    ''' Допуск по напряжению
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public Property Uvalid() As Integer
-        Get
-            Return If(_Uvalid = Nothing, 0, If(_Uvalid > 0, _Uvalid, 0))
-        End Get
-        Set(ByVal value As Integer)
-            _Uvalid = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
-    End Property
-    ''' <summary>
-    ''' Минимальное рабочее напряжение
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public ReadOnly Property Umin() As Integer
-        Get
-            Return If(U - Uvalid > 0, U - Uvalid, 0)
-        End Get
-    End Property
-    ''' <summary>
-    ''' Максимальное рабочее напряжение
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public ReadOnly Property Umax() As Integer
-        Get
-            Return If(U + Uvalid > 0, U + Uvalid, 0)
-        End Get
-    End Property
-    ''' <summary>
-    ''' Строковый формат напряжения
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public ReadOnly Property Ustr() As String
-        Get
-            Return If(Umin > 0, "≤" & Umin.ToString(Base.doubleformat), "")
-        End Get
-    End Property
-    ''' <summary>
-    ''' Напряжение включения
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public Property UI() As Integer
-        Get
-            Return If(_UI = Nothing, 0, If(_UI > 0, _UI, 0))
-        End Get
-        Set(ByVal value As Integer)
-            _UI = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
-    End Property
-    ''' <summary>
-    ''' Напряжение выключения
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public Property UO() As Integer
-        Get
-            Return If(_UO = Nothing, 0, If(_UO > 0, _UO, 0))
-        End Get
-        Set(ByVal value As Integer)
-            _UO = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
-    End Property
-    ''' <summary>
-    ''' Контроль UI
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public ReadOnly Property ControlUI() As Boolean
-        Get
-            Return UI < Umin Or Umin <= 0
-        End Get
-    End Property
-    ''' <summary>
-    ''' Контроль UO
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public ReadOnly Property ControlUO() As Boolean
-        Get
-            Return UO < Umin Or Umin <= 0
-        End Get
-    End Property
-    ''' <summary>
-    ''' Проверка работоспособности при минимальном напряжении
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public ReadOnly Property ControlU() As Boolean
-        Get
-            Return ControlUI And ControlUO
-        End Get
-    End Property
-    ''' <summary>
-    ''' Рабочий ток
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public Property I() As Double
-        Get
-            Return If(_I = Nothing, 0, If(_I > 0, _I, 0))
+            Return _U
         End Get
         Set(ByVal value As Double)
-            _I = If(value = Nothing, 0, If(value > 0, value, 0))
+            If value < 0 Then value = 0
+            _U = value
         End Set
     End Property
     ''' <summary>
-    ''' Допуск по току
+    ''' Строковый формат напряжения включения
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Property Ivalid() As Double
+    Public ReadOnly Property UiMaxMinStr() As String
         Get
-            Return If(_Ivalid = Nothing, 0, If(_Ivalid > 0, _Ivalid, 0))
-        End Get
-        Set(ByVal value As Double)
-            _Ivalid = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
-    End Property
-    ''' <summary>
-    ''' Максимальный ток
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public ReadOnly Property Imin() As Double
-        Get
-            Return If(I - Ivalid > 0, I - Ivalid, 0)
+            If Ui.Min <= 0 And Ui.Max = Double.MaxValue Then
+                Return ""
+            ElseIf Ui.Min <= 0 Then
+                Return "≤" & Ui.Max.ToString(Base.doubleformat)
+            ElseIf Ui.Max = Double.MaxValue Then
+                Return "≥" & Ui.Min.ToString(Base.doubleformat)
+            Else
+                Return Ui.Min.ToString(Base.doubleformat) & " .. " & Ui.Max.ToString(Base.doubleformat)
+            End If
         End Get
     End Property
     ''' <summary>
-    ''' Максимальный ток
+    ''' Строковый формат напряжения включения фактического
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public ReadOnly Property Imax() As Double
+    Public ReadOnly Property UiFactStr() As String
         Get
-            Return If(I + Ivalid > 0, I + Ivalid, 0)
+            Return Ui.Fact.ToString(Base.doubleformat)
         End Get
     End Property
     ''' <summary>
-    ''' Строковый формат тока
+    ''' В
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public ReadOnly Property Istr() As String
+    Public ReadOnly Property Uiei() As String
         Get
-            Return If(I > 0, _
-                      If(Ivalid > 0, _
-                         I.ToString(Base.doubleformat) & "±" & Ivalid.ToString(Base.doubleformat), _
-                         "≤" & I.ToString(Base.doubleformat)), _
-                      "")
+            Return "В"
         End Get
     End Property
     ''' <summary>
-    ''' Ток включения
+    ''' Строковый формат напряжения выключения
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Property II() As Integer
+    Public ReadOnly Property UoMaxMinStr() As String
         Get
-            Return If(_II = Nothing, 0, If(_II > 0, _II, 0))
-        End Get
-        Set(ByVal value As Integer)
-            _II = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
-    End Property
-    ''' <summary>
-    ''' Ток выключения
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public Property IO() As Integer
-        Get
-            Return If(_IO = Nothing, 0, If(_IO > 0, _IO, 0))
-        End Get
-        Set(ByVal value As Integer)
-            _IO = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
-    End Property
-    ''' <summary>
-    ''' Проверка тока включения
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public ReadOnly Property ControlII() As Boolean
-        Get
-            Return Not I > 0 Or If(Ivalid > 0, Imin <= II And II <= Imax, II <= I)
+            If Uo.Min <= 0 And Uo.Max = Double.MaxValue Then
+                Return ""
+            ElseIf Uo.Min <= 0 Then
+                Return "≤" & Uo.Max.ToString(Base.doubleformat)
+            ElseIf Uo.Max = Double.MaxValue Then
+                Return "≥" & Uo.Min.ToString(Base.doubleformat)
+            Else
+                Return Uo.Min.ToString(Base.doubleformat) & " .. " & Uo.Max.ToString(Base.doubleformat)
+            End If
         End Get
     End Property
     ''' <summary>
-    ''' Проверка тока выключения
+    ''' Строковый формат напряжения выключения фактического
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public ReadOnly Property ControlIO() As Boolean
+    Public ReadOnly Property UoFactStr() As String
         Get
-            Return Not I > 0 Or If(Ivalid > 0, Imin <= IO And IO <= Imax, IO <= I)
+            Return Uo.Fact.ToString(Base.doubleformat)
         End Get
     End Property
     ''' <summary>
-    ''' Рабочее сопротивление
+    ''' В
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Property R() As Double
+    Public ReadOnly Property Uoei() As String
         Get
-            Return If(_R = Nothing, 0, If(_R > 0, _R, 0))
-        End Get
-        Set(ByVal value As Double)
-            _R = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
-    End Property
-    ''' <summary>
-    ''' Допуск по сопротивлению
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public Property Rvalid() As Double
-        Get
-            Return If(_Rvalid = Nothing, 0, If(_Rvalid > 0, _Rvalid, 0))
-        End Get
-        Set(ByVal value As Double)
-            _Rvalid = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
-    End Property
-    ''' <summary>
-    ''' Максимальное сопротивление
-    ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Public ReadOnly Property Rmin() As Double
-        Get
-            Return If(R - Rvalid > 0, R - Rvalid, 0)
+            Return "В"
         End Get
     End Property
     ''' <summary>
-    ''' Максимальное сопротивление
+    ''' Строковый формат напряжения рабочего
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public ReadOnly Property Rmax() As Double
+    Public ReadOnly Property UworkMaxMinStr() As String
         Get
-            Return If(R + Rvalid > 0, R + Rvalid, 0)
+            If Uwork.Min <= 0 And Uwork.Max = Double.MaxValue Then
+                Return ""
+            ElseIf Uwork.Min <= 0 Then
+                Return "≤" & Uwork.Max.ToString(Base.doubleformat)
+            ElseIf Uwork.Max = Double.MaxValue Then
+                Return "≥" & Uwork.Min.ToString(Base.doubleformat)
+            Else
+                Return Uwork.Min.ToString(Base.doubleformat) & " .. " & Uwork.Max.ToString(Base.doubleformat)
+            End If
+        End Get
+    End Property
+    ''' <summary>
+    ''' Строковый формат напряжения рабочего фактического
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property UworkFactStr() As String
+        Get
+            Return Uwork.Fact.ToString(Base.doubleformat)
+        End Get
+    End Property
+    ''' <summary>
+    ''' В
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property Uworkei() As String
+        Get
+            Return "В"
+        End Get
+    End Property
+    Public ReadOnly Property IMaxMinStr() As String
+        Get
+            If Ii.Min <= 0 And Ii.Max = Double.MaxValue Then
+                Return ""
+            ElseIf Ii.Min <= 0 Then
+                Return "≤" & If(Ii.Max < 1, _
+                                (Ii.Max * 1000).ToString("#0"), _
+                                Ii.Max.ToString("#0.00"))
+            ElseIf Ii.Max = Double.MaxValue Then
+                Return "≥" & If(Ii.Min < 1, _
+                                (Ii.Min * 1000).ToString("#0"), _
+                                Ii.Min.ToString("#0.00"))
+            Else
+                Return If(Ii.Max < 1, _
+                          (Ii.Min * 1000).ToString("#0"), _
+                          Ii.Min.ToString("#0.00")) & " .. " & _
+                       If(Ii.Max < 1, _
+                          (Ii.Max * 1000).ToString("#0"), _
+                          Ii.Max.ToString("#0.00"))
+            End If
+        End Get
+    End Property
+    ''' <summary>
+    ''' Строковыйй формат фактического тока включения
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property IiFactStr() As String
+        Get
+            Return If(If(Ii.Max = Double.MaxValue, _
+                         Ii.Min < 1, _
+                         Ii.Max < 1), _
+                      (Ii.Fact * 1000).ToString("#0"), _
+                      Ii.Fact.ToString("#0.00"))
+        End Get
+    End Property
+    ''' <summary>
+    ''' Строковыйй формат фактического тока выключения
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property IoFactStr() As String
+        Get
+            Return If(If(Io.Max = Double.MaxValue, _
+                         Io.Min < 1, _
+                         Io.Max < 1), _
+                      (Io.Fact * 1000).ToString("#0"), _
+                      Io.Fact.ToString("#0.00"))
+        End Get
+    End Property
+    ''' <summary>
+    ''' A or mA от диапазона
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property Iei() As String
+        Get
+            Return If(If(Ii.Max = Double.MaxValue, _
+                         Ii.Min < 1, _
+                         Ii.Max < 1), _
+                      "мА", _
+                      "А")
         End Get
     End Property
     ''' <summary>
@@ -354,38 +302,66 @@
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public ReadOnly Property Rstr() As String
+    Public ReadOnly Property RMaxMinStr() As String
         Get
-            Return If(R > 0, _
-                      If(Rvalid > 0, _
-                         R.ToString(Base.doubleformat) & "±" & Rvalid.ToString(Base.doubleformat), _
-                         "≤" & R.ToString(Base.doubleformat)), _
-                      "")
+            If R.Min <= 0 And R.Max = Double.MaxValue Then
+                Return ""
+            ElseIf R.Min <= 0 Then
+                Return "≤" & If(R.Max < 100, _
+                                R.Max.ToString("#0.0"), _
+                                If(R.Max < 1000, _
+                                   R.Max.ToString("#0"), _
+                                   (R.Max / 1000).ToString("#0.00")))
+            ElseIf R.Max = Double.MaxValue Then
+                Return "≥" & If(R.Min < 100, _
+                                R.Min.ToString("#0.0"), _
+                                If(R.Min < 1000, _
+                                   R.Min.ToString("#0"), _
+                                   (R.Min / 1000).ToString("#0.00")))
+            Else
+                Return If(R.Max < 100, _
+                          R.Min.ToString("#0.0"), _
+                          If(R.Max < 1000, _
+                             R.Min.ToString("#0"), _
+                             (R.Min / 1000).ToString("#0.00"))) & " .. " & _
+                          If(R.Max < 100, _
+                             R.Max.ToString("#0.0"), _
+                             If(R.Max < 1000, _
+                                R.Max.ToString("#0"), _
+                                (R.Max / 1000).ToString("#0.00")))
+            End If
         End Get
     End Property
     ''' <summary>
-    ''' Фактическое сопротивление
+    ''' Строковый формат фактического сопротивления
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Property Rfact() As Double
+    Public ReadOnly Property RFactStr() As String
         Get
-            Return If(_Rfact = Nothing, 0, If(_Rfact > 0, _Rfact, 0))
+            If If(R.Max = Double.MaxValue, R.Min < 100, R.Max < 100) Then
+                Return R.Fact.ToString("F1")
+            ElseIf If(R.Max = Double.MaxValue, R.Min < 1000, R.Max < 1000) Then
+                Return R.Fact.ToString("F0")
+            Else
+                Return (R.Fact / 1000).ToString("F")
+            End If
         End Get
-        Set(ByVal value As Double)
-            _Rfact = If(value = Nothing, 0, If(value > 0, value, 0))
-        End Set
     End Property
     ''' <summary>
-    ''' Проверка сопротивления
+    ''' Ом or кОм от диапазона
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public ReadOnly Property ControlR() As Boolean
+    Public ReadOnly Property Rei() As String
         Get
-            Return Not R > 0 Or If(Rvalid > 0, Rmin <= Rfact And Rfact <= Rmax, Rfact <= R)
+            Return If(If(R.Max = Double.MaxValue, _
+                         R.Min < 1000, _
+                         R.Max < 1000), _
+                      "Ом", _
+                      "кОм")
         End Get
     End Property
     ''' <summary>
@@ -425,6 +401,26 @@
             Loop
             Do While _KontBCount < _KontsB.Count
                 _KontsB.RemoveAt(_KontsB.Count - 1)
+            Loop
+        End Set
+    End Property
+    ''' <summary>
+    ''' Количество контактов типа C
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property KontCCount() As Integer
+        Get
+            Return If(_KontCCount = Nothing, 0, If(_KontCCount > 0, _KontCCount, 0))
+        End Get
+        Set(ByVal value As Integer)
+            _KontCCount = If(value = Nothing, 0, If(value > 0, value, 0))
+            Do While _KontCCount > _KontsC.Count
+                _KontsC.Add(New Контакт())
+            Loop
+            Do While _KontCCount < _KontsC.Count
+                _KontsC.RemoveAt(_KontsC.Count - 1)
             Loop
         End Set
     End Property
@@ -506,7 +502,7 @@
     ''' <remarks></remarks>
     Public ReadOnly Property ControlРастворКонтактаA(ByVal j As Integer) As Boolean
         Get
-            Return If(j >= 0 And j < _KontsA.Count, _KontsA(j).ControlРастворКонтакта(РастворКонтактаAMin, РастворКонтактаAMax), False)
+            Return If(j >= 0 And j <= _KontsA.Count, _KontsA(j).ControlРастворКонтакта(РастворКонтактаAMin, РастворКонтактаAMax), False)
         End Get
     End Property
     ''' <summary>
@@ -588,6 +584,87 @@
     Public ReadOnly Property ControlРастворКонтактаB(ByVal j As Integer) As Boolean
         Get
             Return If(j >= 0 And j < _KontsB.Count, _KontsB(j).ControlРастворКонтакта(РастворКонтактаBMin, РастворКонтактаBMax), False)
+        End Get
+    End Property
+    ''' <summary>
+    ''' Раствор Контакта тип C min
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property РастворКонтактаCMin() As Double
+        Get
+            Return If(_РастворКонтактаCMin = Nothing, _
+                      0, _
+                      If(Math.Min(_РастворКонтактаCMin, _РастворКонтактаCMax) > 0, _
+                         Math.Min(_РастворКонтактаCMin, _РастворКонтактаCMax), _
+                         0))
+        End Get
+        Set(ByVal value As Double)
+            _РастворКонтактаCMin = If(value = Nothing, 0, If(value > 0, value, 0))
+        End Set
+    End Property
+    ''' <summary>
+    ''' Раствор Контакта тип C max
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property РастворКонтактаCMax() As Double
+        Get
+            Return If(_РастворКонтактаCMax = Nothing, _
+                      0, _
+                      If(Math.Max(_РастворКонтактаCMin, _РастворКонтактаCMax) > 0, _
+                         Math.Max(_РастворКонтактаCMin, _РастворКонтактаCMax), _
+                         0))
+        End Get
+        Set(ByVal value As Double)
+            _РастворКонтактаCMax = If(value = Nothing, 0, If(value > 0, value, 0))
+        End Set
+    End Property
+    ''' <summary>
+    ''' Строковый формат раствора контакта тип C
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property РастворКонтактаCstr() As String
+        Get
+            Return If(РастворКонтактаCMax > 0, _
+                      If(РастворКонтактаCMin > 0, _
+                         РастворКонтактаCMin.ToString(doubleformat) & " .. " & РастворКонтактаCMax.ToString(doubleformat), _
+                         "≥" & РастворКонтактаCMax.ToString(doubleformat)), _
+                      "")
+        End Get
+    End Property
+    ''' <summary>
+    ''' Фактический Раствор Контакта тип C
+    ''' </summary>
+    ''' <param name="j"></param>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property РастворКонтактаCFact(ByVal j As Integer) As Double
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).РастворКонтакта, 0)
+        End Get
+        Set(ByVal value As Double)
+            If j >= 0 And j < _KontsC.Count Then
+                _KontsC(j).РастворКонтакта = value
+            Else
+                TPA.Log.Print(TPA.Rank.EXCEPT, "РастворКонтактаCFact[" & j & "] вне предела диапазона 0 .. " & _KontsC.Count - 1)
+            End If
+        End Set
+    End Property
+    ''' <summary>
+    ''' Контроль Раствота Контакта тип C
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property ControlРастворКонтактаC(ByVal j As Integer) As Boolean
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).ControlРастворКонтакта(РастворКонтактаCMin, РастворКонтактаCMax), False)
         End Get
     End Property
     ''' <summary>
@@ -753,6 +830,87 @@
         End Get
     End Property
     ''' <summary>
+    ''' Провал Контакта тип C min
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property ПровалКонтактаCMin() As Double
+        Get
+            Return If(_ПровалКонтактаCMin = Nothing, _
+                      0, _
+                      If(Math.Min(_ПровалКонтактаCMin, _ПровалКонтактаCMax) > 0, _
+                         Math.Min(_ПровалКонтактаCMin, _ПровалКонтактаCMax), _
+                         0))
+        End Get
+        Set(ByVal value As Double)
+            _ПровалКонтактаCMin = If(value = Nothing, 0, If(value > 0, value, 0))
+        End Set
+    End Property
+    ''' <summary>
+    ''' Провал Контакта тип C max
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property ПровалКонтактаCMax() As Double
+        Get
+            Return If(_ПровалКонтактаCMax = Nothing, _
+                      0, _
+                      If(Math.Max(_ПровалКонтактаCMin, _ПровалКонтактаCMax) > 0, _
+                         Math.Max(_ПровалКонтактаCMin, _ПровалКонтактаCMax), _
+                         0))
+        End Get
+        Set(ByVal value As Double)
+            _ПровалКонтактаCMax = If(value = Nothing, 0, If(value > 0, value, 0))
+        End Set
+    End Property
+    ''' <summary>
+    ''' Строковый формат провала контакта тип C
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property ПровалКонтактаCstr() As String
+        Get
+            Return If(ПровалКонтактаCMax > 0, _
+                      If(ПровалКонтактаCMin > 0, _
+                         ПровалКонтактаCMin.ToString(doubleformat) & " .. " & ПровалКонтактаCMax.ToString(doubleformat), _
+                         "≥" & ПровалКонтактаCMax.ToString(doubleformat)), _
+                      "")
+        End Get
+    End Property
+    ''' <summary>
+    ''' Фактический Провал Контакта тип C
+    ''' </summary>
+    ''' <param name="j"></param>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property ПровалКонтактаCFact(ByVal j As Integer) As Double
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).ПровалКонтакта, 0)
+        End Get
+        Set(ByVal value As Double)
+            If j >= 0 And j < _KontsC.Count Then
+                _KontsC(j).ПровалКонтакта = value
+            Else
+                TPA.Log.Print(TPA.Rank.EXCEPT, "ПровалКонтактаCFact[" & j & "] вне предела диапазона 0 .. " & _KontsC.Count - 1)
+            End If
+        End Set
+    End Property
+    ''' <summary>
+    ''' Контроль Раствота Контакта тип C
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property ControlПровалКонтактаC(ByVal j As Integer) As Boolean
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).ControlПровалКонтакта(ПровалКонтактаCMin, ПровалКонтактаCMax), False)
+        End Get
+    End Property
+    ''' <summary>
     ''' Нажание Контакта (Нач) тип А min
     ''' </summary>
     ''' <value></value>
@@ -912,6 +1070,87 @@
     Public ReadOnly Property ControlНажатиеНачB(ByVal j As Integer) As Boolean
         Get
             Return If(j >= 0 And j < _KontsB.Count, _KontsB(j).ControlНажатиеНач(НажатиеНачBMin, НажатиеНачBMax), False)
+        End Get
+    End Property
+    ''' <summary>
+    ''' Нажание Контакта (Нач) тип C min
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property НажатиеНачCMin() As Double
+        Get
+            Return If(_НажатиеНачCMin = Nothing, _
+                      0, _
+                      If(Math.Min(_НажатиеНачCMin, _НажатиеНачCMax) > 0, _
+                         Math.Min(_НажатиеНачCMin, _НажатиеНачCMax), _
+                         0))
+        End Get
+        Set(ByVal value As Double)
+            _НажатиеНачCMin = If(value = Nothing, 0, If(value > 0, value, 0))
+        End Set
+    End Property
+    ''' <summary>
+    ''' Нажание Контакта (Нач) тип C max
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property НажатиеНачCMax() As Double
+        Get
+            Return If(_НажатиеНачCMax = Nothing, _
+                      0, _
+                      If(Math.Max(_НажатиеНачCMin, _НажатиеНачCMax) > 0, _
+                         Math.Max(_НажатиеНачCMin, _НажатиеНачCMax), _
+                         0))
+        End Get
+        Set(ByVal value As Double)
+            _НажатиеНачCMax = If(value = Nothing, 0, If(value > 0, value, 0))
+        End Set
+    End Property
+    ''' <summary>
+    ''' Строковый формат нажатия (нач) контакта тип C
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property НажатиеНачCstr() As String
+        Get
+            Return If(НажатиеНачAMax > 0, _
+                      If(НажатиеНачCMin > 0, _
+                         НажатиеНачCMin.ToString(doubleformat) & " .. " & НажатиеНачCMax.ToString(doubleformat), _
+                         "≥" & НажатиеНачCMax.ToString(doubleformat)), _
+                      "")
+        End Get
+    End Property
+    ''' <summary>
+    ''' Фактическое Нажание Контакта (Нач) тип C
+    ''' </summary>
+    ''' <param name="j"></param>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property НажатиеНачCFact(ByVal j As Integer) As Double
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).НажатиеНач, 0)
+        End Get
+        Set(ByVal value As Double)
+            If j >= 0 And j < _KontsC.Count Then
+                _KontsC(j).НажатиеНач = value
+            Else
+                TPA.Log.Print(TPA.Rank.EXCEPT, "НажатиеНачCFact[" & j & "] вне предела диапазона 0 .. " & _KontsC.Count - 1)
+            End If
+        End Set
+    End Property
+    ''' <summary>
+    ''' Контроль Нажания Контакта (Нач) тип C
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property ControlНажатиеНачC(ByVal j As Integer) As Boolean
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).ControlНажатиеНач(НажатиеНачCMin, НажатиеНачCMax), False)
         End Get
     End Property
     ''' <summary>
@@ -1077,6 +1316,87 @@
         End Get
     End Property
     ''' <summary>
+    ''' Нажание Контакта (Кон) тип C min
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property НажатиеКонCMin() As Double
+        Get
+            Return If(_НажатиеКонCMin = Nothing, _
+                      0, _
+                      If(Math.Min(_НажатиеКонCMin, _НажатиеКонCMax) > 0, _
+                         Math.Min(_НажатиеКонCMin, _НажатиеКонCMax), _
+                         0))
+        End Get
+        Set(ByVal value As Double)
+            _НажатиеКонCMin = If(value = Nothing, 0, If(value > 0, value, 0))
+        End Set
+    End Property
+    ''' <summary>
+    ''' Нажание Контакта (Кон) тип C max
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property НажатиеКонCMax() As Double
+        Get
+            Return If(_НажатиеКонCMax = Nothing, _
+                      0, _
+                      If(Math.Max(_НажатиеКонCMin, _НажатиеКонCMax) > 0, _
+                         Math.Max(_НажатиеКонCMin, _НажатиеКонCMax), _
+                         0))
+        End Get
+        Set(ByVal value As Double)
+            _НажатиеКонCMax = If(value = Nothing, 0, If(value > 0, value, 0))
+        End Set
+    End Property
+    ''' <summary>
+    ''' Строковый формат нажатия (кон) контакта тип C
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property НажатиеКонCstr() As String
+        Get
+            Return If(НажатиеКонCMax > 0, _
+                      If(НажатиеКонCMin > 0, _
+                         НажатиеКонCMin.ToString(doubleformat) & " .. " & НажатиеКонCMax.ToString(doubleformat), _
+                         "≥" & НажатиеКонCMax.ToString(doubleformat)), _
+                      "")
+        End Get
+    End Property
+    ''' <summary>
+    ''' Фактическое Нажание Контакта (Кон) тип C
+    ''' </summary>
+    ''' <param name="j"></param>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property НажатиеКонCFact(ByVal j As Integer) As Double
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).НажатиеКон, 0)
+        End Get
+        Set(ByVal value As Double)
+            If j >= 0 And j < _KontsC.Count Then
+                _KontsC(j).НажатиеКон = value
+            Else
+                TPA.Log.Print(TPA.Rank.EXCEPT, "НажатиеКонCFact[" & j & "] вне предела диапазона 0 .. " & _KontsC.Count - 1)
+            End If
+        End Set
+    End Property
+    ''' <summary>
+    ''' Контроль Нажания Контакта (Кон) тип C
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property ControlНажатиеКонC(ByVal j As Integer) As Boolean
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).ControlНажатиеКон(НажатиеКонCMin, НажатиеКонCMax), False)
+        End Get
+    End Property
+    ''' <summary>
     ''' Состояние контакта тип A
     ''' </summary>
     ''' <param name="j"></param>
@@ -1111,6 +1431,25 @@
                 _KontsB(j).Состояние = value
             Else
                 TPA.Log.Print(TPA.Rank.EXCEPT, "СостояниеB[" & j & "] вне предела диапазона 0 .. " & _KontsB.Count - 1)
+            End If
+        End Set
+    End Property
+    ''' <summary>
+    ''' Состояние контакта тип C
+    ''' </summary>
+    ''' <param name="j"></param>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property СостояниеC(ByVal j As Integer) As Boolean
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).Состояние, False)
+        End Get
+        Set(ByVal value As Boolean)
+            If j >= 0 And j < _KontsC.Count Then
+                _KontsC(j).Состояние = value
+            Else
+                TPA.Log.Print(TPA.Rank.EXCEPT, "СостояниеC[" & j & "] вне предела диапазона 0 .. " & _KontsC.Count - 1)
             End If
         End Set
     End Property
@@ -1155,6 +1494,26 @@
         End Get
     End Property
     ''' <summary>
+    ''' Контроль контакта тип C
+    ''' </summary>
+    ''' <param name="j"></param>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property ControlC(ByVal j As Integer) As Boolean
+        Get
+            Return If(j >= 0 And j < _KontsC.Count, _KontsC(j).Control(РабочиеПарамерты, _
+                                                                       РастворКонтактаCMin, _
+                                                                       РастворКонтактаCMax, _
+                                                                       ПровалКонтактаCMin, _
+                                                                       ПровалКонтактаCMax, _
+                                                                       НажатиеНачCMin, _
+                                                                       НажатиеНачCMax, _
+                                                                       НажатиеКонCMin, _
+                                                                       НажатиеКонCMax), False)
+        End Get
+    End Property
+    ''' <summary>
     ''' Полный контроль аппарата
     ''' </summary>
     ''' <value></value>
@@ -1162,12 +1521,20 @@
     ''' <remarks></remarks>
     Public ReadOnly Property Control() As Boolean
         Get
-            Control = ControlUO And ControlII And ControlIO And ControlR
+            Control = (Uwork.Control Or Not РабочиеПарамерты.work) _
+            And (Ui.Control Or Not РабочиеПарамерты.I) _
+            And (Uo.Control Or Not РабочиеПарамерты.O) _
+            And (Ii.Control Or Not РабочиеПарамерты.I) _
+            And (Io.Control Or Not РабочиеПарамерты.O) _
+            And (R.Control Or Not РабочиеПарамерты.R)
             For j As Integer = 0 To KontACount - 1
                 Control = Control And ControlA(j)
             Next
             For j As Integer = 0 To KontBCount - 1
                 Control = Control And ControlB(j)
+            Next
+            For j As Integer = 0 To KontCCount - 1
+                Control = Control And ControlC(j)
             Next
         End Get
     End Property
@@ -1178,13 +1545,21 @@
     Public Sub Save()
         Dim dict As Dictionary(Of String, String) = New Dictionary(Of String, String)
         dict.Add("U", U)
-        dict.Add("Uvalid", Uvalid)
-        dict.Add("I", I)
-        dict.Add("Ivalid", Ivalid)
-        dict.Add("R", R)
-        dict.Add("Rvalid", Rvalid)
+        dict.Add("UworkMin", Uwork.Min)
+        dict.Add("UworkMax", Uwork.Max)
+        dict.Add("UiMin", Ui.Min)
+        dict.Add("UiMax", Ui.Max)
+        dict.Add("UoMin", Uo.Min)
+        dict.Add("UoMax", Uo.Max)
+        dict.Add("IiMin", Ii.Min)
+        dict.Add("IiMax", Ii.Max)
+        dict.Add("IoMin", Io.Min)
+        dict.Add("IoMax", Io.Max)
+        dict.Add("RMin", R.Min)
+        dict.Add("RMax", R.Max)
         dict.Add("KontACount", KontACount)
         dict.Add("KontBCount", KontBCount)
+        dict.Add("KontCCount", KontCCount)
         dict.Add("РастворКонтактаAMin", РастворКонтактаAMin)
         dict.Add("РастворКонтактаAMax", РастворКонтактаAMax)
         dict.Add("ПровалКонтактаAMin", ПровалКонтактаAMin)
@@ -1201,40 +1576,92 @@
         dict.Add("НажатиеНачBMax", НажатиеНачBMax)
         dict.Add("НажатиеКонBMin", НажатиеКонBMin)
         dict.Add("НажатиеКонBMax", НажатиеКонBMax)
+        dict.Add("РастворКонтактаCMin", РастворКонтактаCMin)
+        dict.Add("РастворКонтактаCMax", РастворКонтактаCMax)
+        dict.Add("ПровалКонтактаCMin", ПровалКонтактаCMin)
+        dict.Add("ПровалКонтактаCMax", ПровалКонтактаCMax)
+        dict.Add("НажатиеНачCMin", НажатиеНачCMin)
+        dict.Add("НажатиеНачCMax", НажатиеНачCMax)
+        dict.Add("НажатиеКонCMin", НажатиеКонCMin)
+        dict.Add("НажатиеКонCMax", НажатиеКонCMax)
+        dict.Add("РабочиеПарамерты.I", РабочиеПарамерты.I)
+        dict.Add("РабочиеПарамерты.O", РабочиеПарамерты.O)
+        dict.Add("РабочиеПарамерты.R", РабочиеПарамерты.R)
+        dict.Add("РабочиеПарамерты.work", РабочиеПарамерты.work)
+        dict.Add("РабочиеПарамерты.Состояние", РабочиеПарамерты.Состояние)
+        dict.Add("РабочиеПарамерты.РастворКонтактов", РабочиеПарамерты.РастворКонтактов)
+        dict.Add("РабочиеПарамерты.ПровалКонтактов", РабочиеПарамерты.ПровалКонтактов)
+        dict.Add("РабочиеПарамерты.НажатиеНач", РабочиеПарамерты.НажатиеНач)
+        dict.Add("РабочиеПарамерты.НажатиеКон", РабочиеПарамерты.НажатиеКон)
         If Base.devices.Write(Name, dict) <> 0 Then TPA.Log.Print(TPA.Rank.EXCEPT, "Устройство " & Name & " не сохранено")
     End Sub
     Public Sub Read(ByVal _Name_ As String)
         Dim dict = devices.Read(_Name_)
         Name = _Name_
         Try
-            U = Convert.ToInt32(dict("U"))
+            U = Convert.ToDouble(dict("U"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[U]")
         End Try
         Try
-            Uvalid = Convert.ToInt32(dict("Uvalid"))
+            Uwork.Min = Convert.ToDouble(dict("UworkMin"))
         Catch ex As Exception
-            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Uvalid]")
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Uwork.Min]")
         End Try
         Try
-            I = Convert.ToDouble(dict("I"))
+            Uwork.Max = Convert.ToDouble(dict("UworkMax"))
         Catch ex As Exception
-            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[I]")
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Uwork.Max]")
         End Try
         Try
-            Ivalid = Convert.ToDouble(dict("Ivalid"))
+            Ui.Min = Convert.ToDouble(dict("UiMin"))
         Catch ex As Exception
-            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Ivalid]")
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Ui.Min]")
         End Try
         Try
-            R = Convert.ToDouble(dict("R"))
+            Ui.Max = Convert.ToDouble(dict("UiMax"))
         Catch ex As Exception
-            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[R]")
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Ui.Max]")
         End Try
         Try
-            Rvalid = Convert.ToDouble(dict("Rvalid"))
+            Uo.Min = Convert.ToDouble(dict("UoMin"))
         Catch ex As Exception
-            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Rvalid]")
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Uo.Min]")
+        End Try
+        Try
+            Uo.Max = Convert.ToDouble(dict("UoMax"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Uo.Max]")
+        End Try
+        Try
+            Ii.Min = Convert.ToDouble(dict("IiMin"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Ii.Min]")
+        End Try
+        Try
+            Ii.Max = Convert.ToDouble(dict("IiMax"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Ii.Max]")
+        End Try
+        Try
+            Io.Min = Convert.ToDouble(dict("IoMin"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Io.Min]")
+        End Try
+        Try
+            Io.Max = Convert.ToDouble(dict("IoMax"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[Io.Max]")
+        End Try
+        Try
+            R.Min = Convert.ToDouble(dict("RMin"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[R.Min]")
+        End Try
+        Try
+            R.Max = Convert.ToDouble(dict("RMax"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[R.Max]")
         End Try
         Try
             KontACount = Convert.ToInt32(dict("KontACount"))
@@ -1245,6 +1672,11 @@
             KontBCount = Convert.ToInt32(dict("KontBCount"))
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[KontBCount]")
+        End Try
+        Try
+            KontCCount = Convert.ToInt32(dict("KontCCount"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[KontCCount]")
         End Try
         Try
             РастворКонтактаAMin = Convert.ToDouble(dict("РастворКонтактаAMin"))
@@ -1326,17 +1758,104 @@
         Catch ex As Exception
             TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеКонBMax]")
         End Try
+        Try
+            РастворКонтактаCMin = Convert.ToDouble(dict("РастворКонтактаCMin"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РастворКонтактаCMin]")
+        End Try
+        Try
+            РастворКонтактаCMax = Convert.ToDouble(dict("РастворКонтактаCMax"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РастворКонтактаCMax]")
+        End Try
+        Try
+            ПровалКонтактаCMin = Convert.ToDouble(dict("ПровалКонтактаCMin"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[ПровалКонтактаCMin]")
+        End Try
+        Try
+            ПровалКонтактаCMax = Convert.ToDouble(dict("ПровалКонтактаCMax"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[ПровалКонтактаCMax]")
+        End Try
+        Try
+            НажатиеНачCMin = Convert.ToDouble(dict("НажатиеНачCMin"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеНачCMin]")
+        End Try
+        Try
+            НажатиеНачCMax = Convert.ToDouble(dict("НажатиеНачCMax"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеНачCMax]")
+        End Try
+        Try
+            НажатиеКонCMin = Convert.ToDouble(dict("НажатиеКонCMin"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеКонCMin]")
+        End Try
+        Try
+            НажатиеКонCMax = Convert.ToDouble(dict("НажатиеКонCMax"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[НажатиеКонCMax]")
+        End Try
+        Try
+            РабочиеПарамерты.I = Convert.ToBoolean(dict("РабочиеПарамерты.I"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РабочиеПарамерты.I]")
+        End Try
+        Try
+            РабочиеПарамерты.O = Convert.ToBoolean(dict("РабочиеПарамерты.O"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РабочиеПарамерты.O]")
+        End Try
+        Try
+            РабочиеПарамерты.R = Convert.ToBoolean(dict("РабочиеПарамерты.R"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РабочиеПарамерты.R]")
+        End Try
+        Try
+            РабочиеПарамерты.work = Convert.ToBoolean(dict("РабочиеПарамерты.work"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РабочиеПарамерты.work]")
+        End Try
+        Try
+            РабочиеПарамерты.Состояние = Convert.ToBoolean(dict("РабочиеПарамерты.Состояние"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РабочиеПарамерты.Состояние]")
+        End Try
+        Try
+            РабочиеПарамерты.РастворКонтактов = Convert.ToBoolean(dict("РабочиеПарамерты.РастворКонтактов"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РабочиеПарамерты.РастворКонтактов]")
+        End Try
+        Try
+            РабочиеПарамерты.ПровалКонтактов = Convert.ToBoolean(dict("РабочиеПарамерты.ПровалКонтактов"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РабочиеПарамерты.ПровалКонтактов]")
+        End Try
+        Try
+            РабочиеПарамерты.НажатиеНач = Convert.ToBoolean(dict("РабочиеПарамерты.НажатиеНач"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РабочиеПарамерты.НажатиеНач]")
+        End Try
+        Try
+            РабочиеПарамерты.НажатиеКон = Convert.ToBoolean(dict("РабочиеПарамерты.НажатиеКон"))
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.WARNING, "Ошибка чтения устройства: " & Name & "[РабочиеПарамерты.НажатиеКон]")
+        End Try
     End Sub
 End Class
 
 Public Class coltrolStruct
+    Public I As Boolean = True
+    Public O As Boolean = True
+    Public work As Boolean = True
     Public R As Boolean = True
     Public РастворКонтактов As Boolean = True
     Public ПровалКонтактов As Boolean = True
     Public НажатиеНач As Boolean = True
     Public НажатиеКон As Boolean = True
     Public Состояние As Boolean = True
-
     Public Sub New()
 
     End Sub

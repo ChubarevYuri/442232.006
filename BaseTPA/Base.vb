@@ -18,16 +18,28 @@
                 val = "Start"
             Case Steps.UIWait
                 val = "UIWait"
-            Case Steps.UIcontrol
-                val = "UIcontrol"
+            Case Steps.UIcontrolI
+                val = "UIcontrolI"
+            Case Steps.UIcontrolW
+                val = "UIcontrolW"
+            Case Steps.UIcontrolO
+                val = "UIcontrolO"
             Case Steps.RWait
                 val = "RWait"
             Case Steps.Rcontrol
                 val = "Rcontrol"
+            Case Steps.Состояние
+                val = "Состояние"
+            Case Steps.Раствор
+                val = "Раствор"
+            Case Steps.Провал
+                val = "Провал"
+            Case Steps.Нач
+                val = "Нач"
+            Case Steps.Кон
+                val = "Кон"
             Case Steps.Result
                 val = "Result"
-            Case Steps.MechanicalControl
-                val = "MechanicalControl"
             Case Else
                 val = ""
         End Select
@@ -40,24 +52,21 @@
     End Function
 
     Public Enum Steps
-        Sleep
-        Start
-        UIWait
-        UIcontrol
-        RWait
-        Rcontrol
-        MechanicalControl
-        Result
+        Sleep = 0
+        Start = 1
+        RWait = 2
+        Rcontrol = 3
+        UIWait = 4
+        UIcontrolW = 5
+        UIcontrolI = 6
+        UIcontrolO = 7
+        Состояние = 8
+        Раствор = 9
+        Провал = 10
+        Нач = 11
+        Кон = 12
+        Result = 13
     End Enum
-
-    Public Structure coltrolStruct
-        Public R As Boolean
-        Public РастворКонтактов As Boolean
-        Public ПровалКонтактов As Boolean
-        Public НажатиеНач As Boolean
-        Public НажатиеКон As Boolean
-        Public Состояние As Boolean
-    End Structure
 
 #Region "Rобр"
     Public ReadOnly Property Rобр1() As Double

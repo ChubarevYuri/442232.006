@@ -8,14 +8,15 @@
     ''' <returns></returns>
     ''' <remarks></remarks>
     Private Function boolToStr(ByVal val As Boolean) As String
-        Return If(val, "норма", "не соотв.")
+        Return If(val, "соответствует", "не соответствует")
     End Function
 
     Private _report As New TPA.Report()
 
-    Public Sub Create(ByVal num As Integer, ByVal device As Device, ByVal user As String, ByVal timeStart As DateTime)
+    Public Sub Create(ByVal num As Integer, ByVal device As Device, ByVal user As String, ByVal master As String, ByVal timeStart As DateTime)
+        TPA.Log.Print(TPA.Rank.OK, "Вывод протокола № " & num)
         _report = New TPA.Report()
-        Dim tableNum As Integer = 1
+        Dim tableNum As Integer = 0
         'чердак
         _report.Line(New TPA.Line(Base.setting.Read("ПРОТОКОЛ", _
                                                       "компания"), _
@@ -43,130 +44,137 @@
         _report.Line(New TPA.Line("Дата и время испытания: " & timeStart.ToString("dd.MM.yyyy HH:mm"), _
                                   TPA.Line.Align.Right, _
                                   TPA.Line.StyleLine.None))
-        _report.Line(New TPA.Line("Аппарат: " & If(device.name.Length > 0, _
-                                                      device.name, _
+        _report.Line(New TPA.Line("Аппарат: " & If(device.Name.Length > 0, _
+                                                      device.Name, _
                                                       "_____________________") & _
-                                                      If(device.num.Length > 0, " № " & device.num, ""), _
+                                                      If(device.Num.Length > 0, " № " & device.Num, ""), _
                                   TPA.Line.Align.Right, _
                                   TPA.Line.StyleLine.None))
         'тело
-        _report.Line(New TPA.Line(tableNum & ". Общие параметры"))
         Dim table As New Collection
+        If device.РабочиеПарамерты.I Or device.РабочиеПарамерты.O Or device.РабочиеПарамерты.R Or device.РабочиеПарамерты.work Then
+            tableNum += 1
+            _report.Line(New TPA.Line(tableNum & ". Общие параметры"))
 
-        table.Add(New TPA.Line() {New TPA.Line("Напряжение включения", _
-                                               TPA.Line.Align.Left, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line("В", _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(device.Ustr, _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(device.UI.ToString, _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(If(device.U > 0, boolToStr(device.ControlUI), ""), _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None)})
-        table.Add(New TPA.Line() {New TPA.Line("Напряжение отключения", _
-                                               TPA.Line.Align.Left, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line("В", _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(device.Ustr, _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(device.UO.ToString, _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(If(device.U > 0, boolToStr(device.ControlUO), ""), _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None)})
-        table.Add(New TPA.Line() {New TPA.Line("Ток включения", _
-                                               TPA.Line.Align.Left, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line("А", _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(device.Istr, _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(device.II.ToString(Base.doubleformat), _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(If(device.I > 0, boolToStr(device.ControlII), ""), _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None)})
-        table.Add(New TPA.Line() {New TPA.Line("Ток выключения", _
-                                               TPA.Line.Align.Left, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line("А", _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(device.Istr, _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(device.IO.ToString(Base.doubleformat), _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(If(device.I > 0, boolToStr(device.ControlIO), ""), _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None)})
-        If device.РабочиеПарамерты.R Then
-            table.Add(New TPA.Line() {New TPA.Line("Сопротивление блока катушек", _
+            If device.РабочиеПарамерты.work Then _
+            table.Add(New TPA.Line() {New TPA.Line("Вкл. при U мин", _
                                                    TPA.Line.Align.Left, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line("Ом", _
+                                      New TPA.Line("---", _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(If(device.R > 0, device.Rstr, ""), _
+                                      New TPA.Line("раб.", _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(device.Rfact.ToString(Base.doubleformat), _
+                                      New TPA.Line(If(device.UworkMaxMinStr.Length > 0, If(device.Uwork.Control, "раб.", "не раб."), ""), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(If(device.R > 0, boolToStr(device.ControlR), ""), _
+                                      New TPA.Line(If(device.UworkMaxMinStr.Length > 0, boolToStr(device.Uwork.Control), ""), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None)})
+            If device.РабочиеПарамерты.I Or device.РабочиеПарамерты.work Then _
+            table.Add(New TPA.Line() {New TPA.Line("Напряжение вкл.", _
+                                                   TPA.Line.Align.Left, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.Uiei, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.UiMaxMinStr, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.UiFactStr, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(If(device.UiMaxMinStr.Length > 0, boolToStr(device.Ui.Control), ""), _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None)})
+            If device.РабочиеПарамерты.I Or device.РабочиеПарамерты.work Then _
+            table.Add(New TPA.Line() {New TPA.Line("Ток включения", _
+                                                   TPA.Line.Align.Left, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.Iei, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.IMaxMinStr, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.IiFactStr, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(If(device.IMaxMinStr.Length > 0, boolToStr(device.Ii.Control), ""), _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None)})
+            If device.РабочиеПарамерты.O Then _
+            table.Add(New TPA.Line() {New TPA.Line("Напряжение откл.", _
+                                                   TPA.Line.Align.Left, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.Uoei, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.UoMaxMinStr, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.UoFactStr, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(If(device.UoMaxMinStr.Length > 0, boolToStr(device.Uo.Control), ""), _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None)})
+            If device.РабочиеПарамерты.O Then _
+            table.Add(New TPA.Line() {New TPA.Line("Ток выключения", _
+                                                   TPA.Line.Align.Left, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.Iei, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.IMaxMinStr, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(device.IoFactStr, _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None), _
+                                      New TPA.Line(If(device.IMaxMinStr.Length > 0, boolToStr(device.Io.Control), ""), _
+                                                   TPA.Line.Align.Center, _
+                                                   TPA.Line.StyleLine.None)})
+            If device.РабочиеПарамерты.R Then _
+                table.Add(New TPA.Line() {New TPA.Line("Ra катушки", _
+                                                       TPA.Line.Align.Left, _
+                                                       TPA.Line.StyleLine.None), _
+                                          New TPA.Line(device.Rei, _
+                                                       TPA.Line.Align.Center, _
+                                                       TPA.Line.StyleLine.None), _
+                                          New TPA.Line(device.RMaxMinStr, _
+                                                       TPA.Line.Align.Center, _
+                                                       TPA.Line.StyleLine.None), _
+                                          New TPA.Line(device.RFactStr, _
+                                                       TPA.Line.Align.Center, _
+                                                       TPA.Line.StyleLine.None), _
+                                          New TPA.Line(If(device.RMaxMinStr.Length > 0, boolToStr(device.R.Control), ""), _
+                                                       TPA.Line.Align.Center, _
+                                                       TPA.Line.StyleLine.None)})
+            _report.Table(New TPA.Line() {New TPA.Line("Параметр", _
+                                                       TPA.Line.Align.Center, _
+                                                       TPA.Line.StyleLine.None, _
+                                                       True), _
+                                          New TPA.Line("ед.из.", _
+                                                       TPA.Line.Align.Center, _
+                                                       TPA.Line.StyleLine.None, _
+                                                       True), _
+                                          New TPA.Line("Норма", _
+                                                       TPA.Line.Align.Center, _
+                                                       TPA.Line.StyleLine.None, _
+                                                       True), _
+                                          New TPA.Line("Факт", _
+                                                       TPA.Line.Align.Center, _
+                                                       TPA.Line.StyleLine.None, _
+                                                               True), _
+                                          New TPA.Line("Результат", _
+                                                       TPA.Line.Align.Center, _
+                                                       TPA.Line.StyleLine.None, _
+                                                       True)}, _
+                     table, _
+                     New Integer() {10, 3, 5, 4, 8})
         End If
-        table.Add(New TPA.Line() {New TPA.Line("Работоспособность при U min", _
-                                               TPA.Line.Align.Left, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line("---", _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line("раб.", _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(If(device.U > 0, If(device.ControlU, "раб.", "не раб."), ""), _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None), _
-                                  New TPA.Line(If(device.U > 0, boolToStr(device.ControlU), ""), _
-                                               TPA.Line.Align.Center, _
-                                               TPA.Line.StyleLine.None)})
-        _report.Table(New TPA.Line() {New TPA.Line("Параметр", _
-                                                   TPA.Line.Align.Center, _
-                                                   TPA.Line.StyleLine.None, _
-                                                   True), _
-                                      New TPA.Line("Ед.изм.", _
-                                                   TPA.Line.Align.Center, _
-                                                   TPA.Line.StyleLine.None, _
-                                                   True), _
-                                      New TPA.Line("Норма", _
-                                                   TPA.Line.Align.Center, _
-                                                   TPA.Line.StyleLine.None, _
-                                                   True), _
-                                      New TPA.Line("Факт", _
-                                                   TPA.Line.Align.Center, _
-                                                   TPA.Line.StyleLine.None, _
-                                                           True), _
-                                      New TPA.Line("Результат", _
-                                                   TPA.Line.Align.Center, _
-                                                   TPA.Line.StyleLine.None, _
-                                                   True)}, _
-                 table, _
-                 New Integer() {13, 4, 5, 4, 5})
         For i As Integer = 0 To device.KontACount - 1
             If device.РабочиеПарамерты.РастворКонтактов Or _
                device.РабочиеПарамерты.ПровалКонтактов Or _
@@ -182,7 +190,7 @@
                                       If(device.РабочиеПарамерты.НажатиеКон, 1, 0) + _
                                       If(device.РабочиеПарамерты.Состояние, 1, 0)
                 _report.ReserveLines(rows)
-                _report.Line(New TPA.Line(tableNum & ". Контакт силовой № " & (i + 1)))
+                _report.Line(New TPA.Line(tableNum & ". Контакт главной цепи замыкающий № " & (i + 1)))
                 table = New Collection
                 If device.РабочиеПарамерты.Состояние Then
                     table.Add(New TPA.Line() {New TPA.Line("Состояние контакта", _
@@ -191,10 +199,10 @@
                                               New TPA.Line("---", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line("испр.", _
+                                              New TPA.Line("норма", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.СостояниеA(i), "испр.", "неиспр."), _
+                                              New TPA.Line(If(device.СостояниеA(i), "норма", "не норма"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
                                               New TPA.Line(boolToStr(device.СостояниеA(i)), _
@@ -273,7 +281,7 @@
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None, _
                                                            True), _
-                                              New TPA.Line("Ед.изм.", _
+                                              New TPA.Line("ед.из.", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None, _
                                                            True), _
@@ -290,7 +298,7 @@
                                                            TPA.Line.StyleLine.None, _
                                                            True)}, _
                          table, _
-                         New Integer() {13, 4, 5, 4, 5})
+                         New Integer() {10, 3, 5, 4, 8})
             End If
         Next
         For i As Integer = 0 To device.KontBCount - 1
@@ -308,7 +316,7 @@
                                       If(device.РабочиеПарамерты.НажатиеКон, 1, 0) + _
                                       If(device.РабочиеПарамерты.Состояние, 1, 0)
                 _report.ReserveLines(rows)
-                _report.Line(New TPA.Line(tableNum & ". Контакт вспомогательный № " & (i + 1)))
+                _report.Line(New TPA.Line(tableNum & ". Контакт главной цепи размыкающий № " & (i + 1)))
                 table = New Collection
                 If device.РабочиеПарамерты.Состояние Then
                     table.Add(New TPA.Line() {New TPA.Line("Состояние контакта", _
@@ -317,10 +325,10 @@
                                               New TPA.Line("---", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line("испр.", _
+                                              New TPA.Line("норма", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.СостояниеB(i), "испр.", "неиспр."), _
+                                              New TPA.Line(If(device.СостояниеB(i), "норма", "не норма"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
                                               New TPA.Line(boolToStr(device.СостояниеB(i)), _
@@ -399,7 +407,7 @@
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None, _
                                                            True), _
-                                              New TPA.Line("Ед.изм.", _
+                                              New TPA.Line("ед.из.", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None, _
                                                            True), _
@@ -416,29 +424,138 @@
                                                            TPA.Line.StyleLine.None, _
                                                            True)}, _
                          table, _
-                         New Integer() {13, 4, 5, 4, 5})
+                         New Integer() {10, 3, 5, 4, 8})
+            End If
+        Next
+        For i As Integer = 0 To device.KontCCount - 1
+            If device.РабочиеПарамерты.РастворКонтактов Or _
+               device.РабочиеПарамерты.ПровалКонтактов Or _
+               device.РабочиеПарамерты.НажатиеНач Or _
+               device.РабочиеПарамерты.НажатиеКон Or _
+               device.РабочиеПарамерты.Состояние Then
+                tableNum += 1
+                _report.Line("")
+                Dim rows As Integer = 2 + _
+                                      If(device.РабочиеПарамерты.РастворКонтактов, 1, 0) + _
+                                      If(device.РабочиеПарамерты.ПровалКонтактов, 1, 0) + _
+                                      If(device.РабочиеПарамерты.НажатиеНач, 1, 0) + _
+                                      If(device.РабочиеПарамерты.НажатиеКон, 1, 0) + _
+                                      If(device.РабочиеПарамерты.Состояние, 1, 0)
+                _report.ReserveLines(rows)
+                _report.Line(New TPA.Line(tableNum & ". Контакт вспомогательной цепи № " & (i + 1)))
+                table = New Collection
+                If device.РабочиеПарамерты.Состояние Then
+                    table.Add(New TPA.Line() {New TPA.Line("Состояние контакта", _
+                                                           TPA.Line.Align.Left, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line("---", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line("норма", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(If(device.СостояниеC(i), "норма", "не норма"), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(boolToStr(device.СостояниеC(i)), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None)})
+                End If
+                If device.РабочиеПарамерты.РастворКонтактов Then
+                    table.Add(New TPA.Line() {New TPA.Line("Раствор контакта", _
+                                                           TPA.Line.Align.Left, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line("мм", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(device.РастворКонтактаCstr, _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(device.РастворКонтактаCFact(i).ToString(Base.doubleformat), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(If(device.РастворКонтактаCMax > 0, boolToStr(device.ControlРастворКонтактаC(i)), ""), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None)})
+                End If
+                If device.РабочиеПарамерты.ПровалКонтактов Then
+                    table.Add(New TPA.Line() {New TPA.Line("Провал контакта", _
+                                                           TPA.Line.Align.Left, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line("мм", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(device.ПровалКонтактаCstr, _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(device.ПровалКонтактаCFact(i).ToString(Base.doubleformat), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(If(device.ПровалКонтактаCMax > 0, boolToStr(device.ControlПровалКонтактаC(i)), ""), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None)})
+                End If
+                If device.РабочиеПарамерты.НажатиеНач Then
+                    table.Add(New TPA.Line() {New TPA.Line("Нажатие (начальное)", _
+                                                           TPA.Line.Align.Left, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line("Н", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(device.НажатиеНачCstr, _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(device.НажатиеНачCFact(i).ToString(Base.doubleformat), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(If(device.НажатиеНачCMax > 0, boolToStr(device.ControlНажатиеНачC(i)), ""), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None)})
+                End If
+                If device.РабочиеПарамерты.НажатиеКон Then
+                    table.Add(New TPA.Line() {New TPA.Line("Нажатие (конечное)", _
+                                                           TPA.Line.Align.Left, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line("Н", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(device.НажатиеКонCstr, _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(device.НажатиеКонCFact(i).ToString(Base.doubleformat), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None), _
+                                              New TPA.Line(If(device.НажатиеКонCMax > 0, boolToStr(device.ControlНажатиеКонC(i)), ""), _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None)})
+                End If
+                _report.Table(New TPA.Line() {New TPA.Line("Параметр", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None, _
+                                                           True), _
+                                              New TPA.Line("ед.из.", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None, _
+                                                           True), _
+                                              New TPA.Line("Норма", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None, _
+                                                           True), _
+                                              New TPA.Line("Факт", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None, _
+                                                                   True), _
+                                              New TPA.Line("Результат", _
+                                                           TPA.Line.Align.Center, _
+                                                           TPA.Line.StyleLine.None, _
+                                                           True)}, _
+                         table, _
+                         New Integer() {10, 3, 5, 4, 8})
             End If
         Next
         'подвал
         _report.Line("")
-        _report.Line(New TPA.Line() {New TPA.Line("Испытания провёл: ", _
-                                                  TPA.Line.Align.Left, _
-                                                  TPA.Line.StyleLine.None), _
-                                       New TPA.Line("", _
-                                           TPA.Line.Align.Center, _
-                                           TPA.Line.StyleLine.FillUnderline), _
-                                       New TPA.Line("/ " & user, _
-                                                    TPA.Line.Align.Left, _
-                                                    TPA.Line.StyleLine.FillUnderline), _
-                                       New TPA.Line("/", _
-                                                    TPA.Line.Align.Center, _
-                                                    TPA.Line.StyleLine.FillUnderline)}, _
-                 New Integer() {34, 14, 24})
-        _report.Line(New TPA.Line("___ __________ 20___ г.", _
-                                  TPA.Line.Align.Right, _
-                                  TPA.Line.StyleLine.None))
-        _report.Line("")
-        _report.ReserveLines(6)
+        _report.ReserveLines(7)
         _report.Line(New TPA.Line() {New TPA.Line("Заключение: ", _
                                                   TPA.Line.Align.Left, _
                                                   TPA.Line.StyleLine.None), _
@@ -453,26 +570,41 @@
                                   TPA.Line.Align.Left, _
                                   TPA.Line.StyleLine.FillUnderline))
         _report.Line("")
-        _report.Line(New TPA.Line() {New TPA.Line("", _
+        _report.Line(New TPA.Line() {New TPA.Line("Оператор: ", _
                                                   TPA.Line.Align.Left, _
                                                   TPA.Line.StyleLine.None), _
                                        New TPA.Line("", _
                                            TPA.Line.Align.Center, _
                                            TPA.Line.StyleLine.FillUnderline), _
-                                       New TPA.Line("/ ", _
+                                       New TPA.Line("/ " & user, _
                                                     TPA.Line.Align.Left, _
                                                     TPA.Line.StyleLine.FillUnderline), _
                                        New TPA.Line("/", _
                                                     TPA.Line.Align.Center, _
                                                     TPA.Line.StyleLine.FillUnderline)}, _
                  New Integer() {34, 14, 24})
-        _report.Line(New TPA.Line("___ __________ 20___ г.", _
-                                  TPA.Line.Align.Right, _
-                                  TPA.Line.StyleLine.None))
+        _report.Line("")
+        _report.Line(New TPA.Line() {New TPA.Line("Мастер: ", _
+                                                  TPA.Line.Align.Left, _
+                                                  TPA.Line.StyleLine.None), _
+                                       New TPA.Line("", _
+                                           TPA.Line.Align.Center, _
+                                           TPA.Line.StyleLine.FillUnderline), _
+                                       New TPA.Line("/ " & master, _
+                                                    TPA.Line.Align.Left, _
+                                                    TPA.Line.StyleLine.FillUnderline), _
+                                       New TPA.Line("/", _
+                                                    TPA.Line.Align.Center, _
+                                                    TPA.Line.StyleLine.FillUnderline)}, _
+                 New Integer() {34, 14, 24})
+        '_report.Line(New TPA.Line("___ __________ 20___ г.", _
+        '                          TPA.Line.Align.Right, _
+        '                          TPA.Line.StyleLine.None))
     End Sub
 
 
-    Public Sub Save(ByVal num As Integer, ByVal device As Device, ByVal user As String, ByVal timeStart As DateTime)
+    Public Sub Save(ByVal num As Integer, ByVal device As Device, ByVal user As String, ByVal master As String, ByVal timeStart As DateTime)
+        TPA.Log.Print(TPA.Rank.OK, "Сохранение протокола № " & num)
         Dim dict As Dictionary(Of String, String) = New Dictionary(Of String, String)
         Dim message As String = ""
         dict.Add("заголовок", "№" & num & " (" & _
@@ -482,28 +614,40 @@
                  timeStart.ToString("dd.MM.yyyy HH:mm") & " " & _
                  boolToStr(device.Control) & ")")
         dict.Add("User", user)
+        dict.Add("Master", master)
         dict.Add("Time", timeStart)
-        dict.Add("Name", device.name)
-        dict.Add("Num", device.num)
+        dict.Add("Name", device.Name)
+        dict.Add("Num", device.Num)
+        dict.Add("РабочиеПарамерты.I", device.РабочиеПарамерты.I)
+        dict.Add("РабочиеПарамерты.O", device.РабочиеПарамерты.O)
+        dict.Add("РабочиеПарамерты.work", device.РабочиеПарамерты.work)
         dict.Add("РабочиеПарамерты.R", device.РабочиеПарамерты.R)
         dict.Add("РабочиеПарамерты.Состояние", device.РабочиеПарамерты.Состояние)
         dict.Add("РабочиеПарамерты.РастворКонтактов", device.РабочиеПарамерты.РастворКонтактов)
         dict.Add("РабочиеПарамерты.ПровалКонтактов", device.РабочиеПарамерты.ПровалКонтактов)
         dict.Add("РабочиеПарамерты.НажатиеНач", device.РабочиеПарамерты.НажатиеНач)
         dict.Add("РабочиеПарамерты.НажатиеКон", device.РабочиеПарамерты.НажатиеКон)
-        dict.Add("U", device.U)
-        dict.Add("Uvalid", device.Uvalid)
-        dict.Add("UI", device.UI)
-        dict.Add("UO", device.UO)
-        dict.Add("I", device.I)
-        dict.Add("Ivalid", device.Ivalid)
-        dict.Add("II", device.II)
-        dict.Add("IO", device.IO)
-        dict.Add("R", device.R)
-        dict.Add("Rvalid", device.Rvalid)
-        dict.Add("Rfact", device.Rfact)
+        dict.Add("UworkMin", device.Uwork.Min)
+        dict.Add("UworkMax", device.Uwork.Max)
+        dict.Add("UworkFact", device.Uwork.Fact)
+        dict.Add("UiMin", device.Ui.Min)
+        dict.Add("UiMax", device.Ui.Max)
+        dict.Add("UiFact", device.Ui.Fact)
+        dict.Add("UoMin", device.Uo.Min)
+        dict.Add("UoMax", device.Uo.Max)
+        dict.Add("UoFact", device.Uo.Fact)
+        dict.Add("IiMin", device.Ii.Min)
+        dict.Add("IiMax", device.Ii.Max)
+        dict.Add("IiFact", device.Ii.Fact)
+        dict.Add("IoMin", device.Io.Min)
+        dict.Add("IoMax", device.Io.Max)
+        dict.Add("IoFact", device.Io.Fact)
+        dict.Add("RMin", device.R.Min)
+        dict.Add("RMax", device.R.Max)
+        dict.Add("RFact", device.R.Fact)
         dict.Add("KontACount", device.KontACount)
         dict.Add("KontBCount", device.KontBCount)
+        dict.Add("KontCCount", device.KontCCount)
         dict.Add("РастворКонтактаAMin", device.РастворКонтактаAMin)
         dict.Add("РастворКонтактаAMax", device.РастворКонтактаAMax)
         dict.Add("ПровалКонтактаAMin", device.ПровалКонтактаAMin)
@@ -520,6 +664,14 @@
         dict.Add("НажатиеНачBMax", device.НажатиеНачBMax)
         dict.Add("НажатиеКонBMin", device.НажатиеКонBMin)
         dict.Add("НажатиеКонBMax", device.НажатиеКонBMax)
+        dict.Add("РастворКонтактаCMin", device.РастворКонтактаCMin)
+        dict.Add("РастворКонтактаCMax", device.РастворКонтактаCMax)
+        dict.Add("ПровалКонтактаCMin", device.ПровалКонтактаCMin)
+        dict.Add("ПровалКонтактаCMax", device.ПровалКонтактаCMax)
+        dict.Add("НажатиеНачCMin", device.НажатиеНачCMin)
+        dict.Add("НажатиеНачCMax", device.НажатиеНачCMax)
+        dict.Add("НажатиеКонCMin", device.НажатиеКонCMin)
+        dict.Add("НажатиеКонCMax", device.НажатиеКонCMax)
         For i As Integer = 0 To device.KontACount - 1
             dict.Add("СостояниеA(" & i & ")", device.СостояниеA(i))
             dict.Add("РастворКонтактаAFact(" & i & ")", device.РастворКонтактаAFact(i))
@@ -533,6 +685,13 @@
             dict.Add("ПровалКонтактаBFact(" & i & ")", device.ПровалКонтактаBFact(i))
             dict.Add("НажатиеНачBFact(" & i & ")", device.НажатиеНачBFact(i))
             dict.Add("НажатиеКонBFact(" & i & ")", device.НажатиеКонBFact(i))
+        Next
+        For i As Integer = 0 To device.KontCCount - 1
+            dict.Add("СостояниеC(" & i & ")", device.СостояниеC(i))
+            dict.Add("РастворКонтактаCFact(" & i & ")", device.РастворКонтактаCFact(i))
+            dict.Add("ПровалКонтактаCFact(" & i & ")", device.ПровалКонтактаCFact(i))
+            dict.Add("НажатиеНачCFact(" & i & ")", device.НажатиеНачCFact(i))
+            dict.Add("НажатиеКонCFact(" & i & ")", device.НажатиеКонCFact(i))
         Next
         Base.reports.Write(num, dict)
     End Sub
@@ -550,8 +709,37 @@
         If dict.Count > 0 Then
             Dim key As String
             Dim user As String = ""
+            Dim master As String = ""
             Dim timeStart As DateTime = Now
             Dim device As Device = New Device()
+            key = "РабочиеПарамерты.I"
+            Try
+                device.РабочиеПарамерты.I = Convert.ToBoolean(dict(key))
+            Catch ex As Exception
+                device.РабочиеПарамерты.I = True
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "РабочиеПарамерты.O"
+            Try
+                device.РабочиеПарамерты.O = Convert.ToBoolean(dict(key))
+            Catch ex As Exception
+                device.РабочиеПарамерты.O = True
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "РабочиеПарамерты.work"
+            Try
+                device.РабочиеПарамерты.work = Convert.ToBoolean(dict(key))
+            Catch ex As Exception
+                device.РабочиеПарамерты.work = True
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "РабочиеПарамерты.R"
+            Try
+                device.РабочиеПарамерты.R = Convert.ToBoolean(dict(key))
+            Catch ex As Exception
+                device.РабочиеПарамерты.R = True
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
             key = "РабочиеПарамерты.Состояние"
             Try
                 device.РабочиеПарамерты.Состояние = Convert.ToBoolean(dict(key))
@@ -600,6 +788,12 @@
             Catch ex As Exception
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
+            key = "Master"
+            Try
+                master = dict(key)
+            Catch ex As Exception
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
             key = "Time"
             Try
                 timeStart = Convert.ToDateTime(dict(key))
@@ -620,81 +814,130 @@
                 device.Num = ""
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "U"
+            key = "UworkMin"
             Try
-                device.U = Convert.ToInt32(dict(key))
+                device.Uwork.Min = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.U = 0
+                device.Uwork.Min = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "Uvalid"
+            key = "UworkMax"
             Try
-                device.Uvalid = Convert.ToInt32(dict(key))
+                device.Uwork.Max = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.Uvalid = 0
+                device.Uwork.Max = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "UI"
+            key = "UworkFact"
             Try
-                device.UI = Convert.ToInt32(dict(key))
+                device.Uwork.Fact = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.UI = 0
+                device.Uwork.Fact = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "UO"
+            key = "UiMin"
             Try
-                device.UO = Convert.ToInt32(dict(key))
+                device.Ui.Min = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.UO = 0
+                device.Ui.Min = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "I"
+            key = "UiMax"
             Try
-                device.I = Convert.ToDouble(dict(key))
+                device.Ui.Max = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.I = 0
+                device.Ui.Max = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "Ivalid"
+            key = "UiFact"
             Try
-                device.Ivalid = Convert.ToDouble(dict(key))
+                device.Ui.Fact = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.Ivalid = 0
+                device.Ui.Fact = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "II"
+            key = "UoMin"
             Try
-                device.II = Convert.ToDouble(dict(key))
+                device.Uo.Min = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.II = 0
+                device.Uo.Min = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "IO"
+            key = "UoMax"
             Try
-                device.IO = Convert.ToDouble(dict(key))
+                device.Uo.Max = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.IO = 0
+                device.Uo.Max = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "R"
+            key = "UoFact"
             Try
-                device.R = Convert.ToDouble(dict(key))
+                device.Uo.Fact = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.R = 0
+                device.Uo.Fact = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "Rvalid"
+            key = "IiMin"
             Try
-                device.Rvalid = Convert.ToDouble(dict(key))
+                device.Ii.Min = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.Rvalid = 0
+                device.Ii.Min = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
-            key = "Rfact"
+            key = "IiMax"
             Try
-                device.Rfact = Convert.ToDouble(dict(key))
+                device.Ii.Max = Convert.ToDouble(dict(key))
             Catch ex As Exception
-                device.Rfact = 0
+                device.Ii.Max = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "IiFact"
+            Try
+                device.Ii.Fact = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.Ii.Fact = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "IoMin"
+            Try
+                device.Io.Min = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.Io.Min = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "IoMax"
+            Try
+                device.Io.Max = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.Io.Max = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "IoFact"
+            Try
+                device.Io.Fact = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.Io.Fact = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "RMin"
+            Try
+                device.R.Min = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.R.Min = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "RMax"
+            Try
+                device.R.Max = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.R.Max = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "RFact"
+            Try
+                device.R.Fact = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.R.Fact = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
             key = "KontACount"
@@ -707,6 +950,13 @@
             key = "KontBCount"
             Try
                 device.KontBCount = Convert.ToInt32(dict(key))
+            Catch ex As Exception
+                device.KontBCount = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "KontCCount"
+            Try
+                device.KontCCount = Convert.ToInt32(dict(key))
             Catch ex As Exception
                 device.KontBCount = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
@@ -823,6 +1073,62 @@
                 device.НажатиеКонBMax = 0
                 TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
             End Try
+            key = "РастворКонтактаCMin"
+            Try
+                device.РастворКонтактаCMin = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.РастворКонтактаCMin = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "РастворКонтактаCMax"
+            Try
+                device.РастворКонтактаCMax = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.РастворКонтактаCMax = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "ПровалКонтактаCMin"
+            Try
+                device.ПровалКонтактаCMin = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.ПровалКонтактаCMin = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "ПровалКонтактаCMax"
+            Try
+                device.ПровалКонтактаCMax = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.ПровалКонтактаCMax = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "НажатиеНачCMin"
+            Try
+                device.НажатиеНачCMin = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.НажатиеНачCMin = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "НажатиеНачCMax"
+            Try
+                device.НажатиеНачCMax = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.НажатиеНачCMax = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "НажатиеКонCMin"
+            Try
+                device.НажатиеКонCMin = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.НажатиеКонCMin = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "НажатиеКонCMax"
+            Try
+                device.НажатиеКонCMax = Convert.ToDouble(dict(key))
+            Catch ex As Exception
+                device.НажатиеКонCMax = 0
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
             For i As Integer = 0 To device.KontACount - 1
                 key = "СостояниеA(" & i & ")"
                 Try
@@ -897,9 +1203,51 @@
                     TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
                 End Try
             Next
-            Create(num, device, user, timeStart)
+            For i As Integer = 0 To device.KontCCount - 1
+                key = "СостояниеC(" & i & ")"
+                Try
+                    device.СостояниеC(i) = Convert.ToBoolean(dict(key))
+                Catch ex As Exception
+                    device.СостояниеC(i) = False
+                    TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+                End Try
+                key = "РастворКонтактаCFact(" & i & ")"
+                Try
+                    device.РастворКонтактаCFact(i) = Convert.ToDouble(dict(key))
+                Catch ex As Exception
+                    device.РастворКонтактаCFact(i) = 0
+                    TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+                End Try
+                key = "ПровалКонтактаCFact(" & i & ")"
+                Try
+                    device.ПровалКонтактаCFact(i) = Convert.ToDouble(dict(key))
+                Catch ex As Exception
+                    device.ПровалКонтактаCFact(i) = 0
+                    TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+                End Try
+                key = "НажатиеНачCFact(" & i & ")"
+                Try
+                    device.НажатиеНачCFact(i) = Convert.ToDouble(dict(key))
+                Catch ex As Exception
+                    device.НажатиеНачCFact(i) = 0
+                    TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+                End Try
+                key = "НажатиеКонCFact(" & i & ")"
+                Try
+                    device.НажатиеКонCFact(i) = Convert.ToDouble(dict(key))
+                Catch ex As Exception
+                    device.НажатиеКонCFact(i) = 0
+                    TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+                End Try
+            Next
+            Create(num, device, user, master, timeStart)
             TPA.WaitFormStop()
-            TPA.DialogForms.Report(_report)
+            TPA.DialogForms.Report(_report, _
+                                   "Протокол" & If(device.Name.Length > 0, _
+                                                   " " & device.Name, _
+                                                   "") & If(device.Num.Length > 0, _
+                                                            " " & device.Num, _
+                                                            ""))
         End If
         TPA.WaitFormStop()
     End Sub
@@ -912,11 +1260,16 @@
     ''' <param name="timeStart"></param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function Show(ByVal user As String, ByVal device As Device, ByVal timeStart As DateTime) As Boolean
-        Create(readNum, device, user, timeStart)
-        Show = TPA.DialogForms.Report(_report)
+    Public Function Show(ByVal user As String, ByVal master As String, ByVal device As Device, ByVal timeStart As DateTime) As Boolean
+        Create(readNum, device, user, master, timeStart)
+        Show = TPA.DialogForms.Report(_report, _
+                                   "Протокол" & If(device.Name.Length > 0, _
+                                                   " " & device.Name, _
+                                                   "") & If(device.Num.Length > 0, _
+                                                            " " & device.Num, _
+                                                            ""))
         If Show Then
-            Save(readNum, device, user, timeStart)
+            Save(readNum, device, user, master, timeStart)
         End If
     End Function
 
