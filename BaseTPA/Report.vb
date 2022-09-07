@@ -606,7 +606,6 @@
     Public Sub Save(ByVal num As Integer, ByVal device As Device, ByVal user As String, ByVal master As String, ByVal timeStart As DateTime)
         TPA.Log.Print(TPA.Rank.OK, "Сохранение протокола № " & num)
         Dim dict As Dictionary(Of String, String) = New Dictionary(Of String, String)
-        Dim message As String = ""
         dict.Add("заголовок", "№" & num & " (" & _
                  If(device.Name.Length > 0, device.Name & " ", "") & _
                  If(device.Num.Length > 0, "<" & device.Num & "> ", "") & _

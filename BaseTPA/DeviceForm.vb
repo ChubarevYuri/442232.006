@@ -418,7 +418,7 @@
     End Sub
 
     Private Sub PanelBУсилиеНачMax_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PanelBУсилиеНачMax.Click
-        TPA.Keyboard.UReal(LabelCУсилиеНачMax.Text)
+        TPA.Keyboard.UReal(LabelBУсилиеНачMax.Text)
     End Sub
 
     Private Sub PanelBУсилиеНачMin_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PanelBУсилиеНачMin.Click

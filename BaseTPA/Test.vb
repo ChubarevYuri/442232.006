@@ -57,34 +57,6 @@
         End Get
     End Property
 
-    ''' <summary>
-    ''' Сопротивление
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private Sub Rread()
-        Do
-            Threading.Thread.Sleep(50)
-            Try
-                Dim res = _Rmeter.val(2000)
-                If res = Double.MinValue Then
-                    BaseForm.TimerControl.Enabled = False
-                    TPA.DialogForms.Message("Перед измерением сопротивления отключите источник от устройства!", "АВАРИЯ", TPA.MsgType.except)
-                    TPA.Log.Print(TPA.Rank.MESSAGE, "Замер сопротивления при подключенном напряжении")
-                    BaseForm.TimerControl.Enabled = True
-                ElseIf res = -1 Then
-                    TPA.Log.Print(TPA.Rank.MESSAGE, "Замер сопротивления не выполнен")
-                ElseIf res = Double.MaxValue Then
-                    R = 50000
-                Else
-                    R = res
-                End If
-            Catch ex As Exception
-                TPA.Log.Print(TPA.Rank.EXCEPT, "Ошибка чтения R [Test Sub Rread()]")
-            End Try
-        Loop
-    End Sub
-
-    Private thread As Threading.Thread
     Private RreadOn As Boolean = False
     ''' <summary>
     ''' Работает ли процесс чтения R
@@ -102,30 +74,38 @@
     ''' </summary>
     ''' <remarks></remarks>
     Public Sub RreadStart()
-        If Not RreadOn Then
-            U = 0
-            R = 0
-            Threading.Thread.Sleep(300)
-            _Rmeter.Rобр = New Double() {Base.Rобр1, Base.Rобр2, Base.Rобр3, Base.Rобр4}
-            TPA.DeviseInspection.stopInspection()
-            thread = New Threading.Thread(AddressOf Rread)
-            thread.Priority = Threading.ThreadPriority.Normal
-            thread.Start()
-            RreadOn = True
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Прекращение процесса считывания R
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Sub RreadStop()
-        If RreadOn Then
-            thread.Abort()
-            RreadOn = False
-            start()
-            U = _Urec
-        End If
+        U = 0
+        R = 0
+        Threading.Thread.Sleep(300)
+        _Rmeter.Rобр = New Double() {Base.Rобр1, Base.Rобр2, Base.Rобр3, Base.Rобр4}
+        TPA.DeviseInspection.stopInspection()
+        RreadOn = True
+        Threading.Thread.Sleep(50)
+        Try
+            Dim res = _Rmeter.val(2000)
+            If res = Double.MinValue Then
+                BaseForm.TimerControl.Enabled = False
+                TPA.DialogForms.Message("Перед измерением сопротивления отключите источник от устройства!", "АВАРИЯ", TPA.MsgType.except)
+                TPA.Log.Print(TPA.Rank.MESSAGE, "Замер сопротивления при подключенном напряжении")
+                BaseForm.TimerControl.Enabled = True
+            ElseIf res = -1 Then
+                R = -1
+                TPA.Log.Print(TPA.Rank.MESSAGE, "Замер сопротивления не выполнен")
+            ElseIf res = 0 Then
+                R = 0
+                TPA.DialogForms.Message("Значение вне диапазона 10 Ом - 50 кОм", "АВАРИЯ", TPA.MsgType.except)
+            ElseIf res = Double.MaxValue Then
+                R = 0
+                TPA.DialogForms.Message("Значение вне диапазона 10 Ом - 50 кОм", "АВАРИЯ", TPA.MsgType.except)
+            Else
+                R = res
+            End If
+        Catch ex As Exception
+            TPA.Log.Print(TPA.Rank.EXCEPT, "Ошибка чтения R [Test Sub Rread()]")
+        End Try
+        RreadOn = False
+        start()
+        U = _Urec
     End Sub
 
 #End Region

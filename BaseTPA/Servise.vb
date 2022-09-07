@@ -253,10 +253,10 @@
         TPA.DialogForms.WaitFormStart()
         TPA.Log.Print(TPA.Rank.MESSAGE, "Осуществлен преднамеренный выход из приложения")
         BaseForm.OperationSleep()
-        Threading.Thread.Sleep(2000)
         TPA.DeviseInspection.stopInspection()
-        TPA.Main.TaskBarShow()
+        Threading.Thread.Sleep(2000)
         TPA.DialogForms.WaitFormStop()
+        TPA.Main.TaskBarShow()
         Application.Exit()
     End Sub
 

@@ -70,7 +70,6 @@
         Test.U = 0
         Test.Urec = 0
         Test.A1using = False
-        Test.RreadStop()
         ButtonReport.Enabled = True
         ButtonService.Enabled = True
         ButtonNew.Enabled = True
@@ -168,7 +167,6 @@
                                     Test.device.Ui.Max / Test.device.R.Min < 0.75, _
                                      False))
             U = 0
-            Test.RreadStop()
             ButtonBothVisible = True
             LabelBothHeadText = "Подготовка к испытанию"
             LabelBothBodyText = If(Test.device.РабочиеПарамерты.R, _
@@ -235,9 +233,6 @@
             LabelBothHeadText = "Ошибка включения"
             LabelBothBodyText = "Аппарат не включился при U = " & Test.U.ToString("#0.0")
             TPA.DialogForms.WaitFormStop()
-            'TPA.DialogForms.Message("Аппарат не включился при U = " & Test.U.ToString("#0.0"), _
-            '                        "Ошибка включения", _
-            '                        TPA.DialogForms.MsgType.warning)
         Else
             Test.device.Ui.Fact = Test.U
             Test.device.Ii.Fact = autoIcontrol()
@@ -248,13 +243,6 @@
                                 "Ток включения " & Test.device.IiFactStr & " " & Test.device.Iei & " при допустимом " & Test.device.IMaxMinStr & " " & Test.device.Iei
 
             TPA.DialogForms.WaitFormStop()
-            'TPA.DialogForms.Message("Напряжение включения " & Test.device.UiFactStr & " " & Test.device.Uiei & " при допустимом " & Test.device.UiMaxMinStr & " " & Test.device.Uiei & _
-            '                        Chr(13) & Chr(10) & _
-            '                        "Ток включения " & Test.device.IiFactStr & " " & Test.device.Iei & " при допустимом " & Test.device.IMaxMinStr & " " & Test.device.Iei, _
-            '                        "Параметры включения", _
-            '                        If(Test.device.Ii.Control And Test.device.Ui.Control, _
-            '                           TPA.DialogForms.MsgType.message, _
-            '                           TPA.DialogForms.MsgType.warning))
         End If
     End Sub
 
@@ -280,7 +268,10 @@
             End Try
             U = val
             Threading.Thread.Sleep(1500)
-            If Test.IOnow <> нормальноЗамкнутыйКонтакт And TPA.DialogForms.Message("Убедитесь, что якорь плотно прижат к катушке. Если это так, то нажмите 'V', иначе 'X'", "Контроль включения", TPA.DialogForms.MsgType.message, True) Then
+            If Test.IOnow <> нормальноЗамкнутыйКонтакт And _
+            If(Test.IOnow <> нормальноЗамкнутыйКонтакт, _
+               TPA.DialogForms.Message("Убедитесь, что якорь плотно прижат к катушке. Если это так, то нажмите 'V', иначе 'X'", "Контроль включения", TPA.DialogForms.MsgType.message, True), _
+               False) Then
                 Test.device.Uwork.Fact = Test.device.Uwork.Max
                 Test.device.Ui.Fact = Test.U
                 Test.device.Ii.Fact = Test.I
@@ -290,7 +281,7 @@
                 TPA.DialogForms.WaitFormStop()
             Else
                 Test.device.Uwork.Fact = If(Test.device.Uwork.Max < Double.MaxValue, Double.MaxValue, Double.MinValue)
-                Test.device.Ui.Fact = Double.MaxValue
+                Test.device.Ui.Fact = 0
                 Test.device.Ii.Fact = 0
                 ButtonBothVisible = True
                 LabelBothHeadText = "Контроль срабатывания при U min"
@@ -385,7 +376,13 @@
     End Sub
 
     Private Function autoIcontrol() As Double
-        If Test.I < 0.75 And Test.A1using = False Then
+        Dim icorr As Double
+        Try
+            icorr = Convert.ToDouble(setting.Read("СТЕНД", "I переключение"))
+        Catch ex As Exception
+            icorr = 0.8
+        End Try
+        If Test.I <= icorr And Test.A1using = False Then
             Test.A1using = True
             Threading.Thread.Sleep(1000)
             autoIcontrol = Test.I
@@ -451,7 +448,6 @@
             ButtonBothText = "Ввод"
             LabelBothHeadText = "Контролируемые параметры"
             LabelBothBodyText = "Проведите визуальный осмотр каждого контакта и укажите их состояние (V - норма, X- не норма)"
-            Test.RreadStop()
             U = 0
             Test.A1using = False
             TPA.DialogForms.WaitFormStop()
@@ -470,7 +466,6 @@
             ButtonBothText = "Ввод"
             LabelBothHeadText = "Контролируемые параметры"
             LabelBothBodyText = "Проведите замер раствора каждого контакта и внесите эти данные"
-            Test.RreadStop()
             U = 0
             Test.A1using = False
             TPA.DialogForms.WaitFormStop()
@@ -489,7 +484,6 @@
             ButtonBothText = "Ввод"
             LabelBothHeadText = "Контролируемые параметры"
             LabelBothBodyText = "Проведите замер провала каждого контакта и внесите эти данные"
-            Test.RreadStop()
             U = 0
             Test.A1using = False
             TPA.DialogForms.WaitFormStop()
@@ -508,7 +502,6 @@
             ButtonBothText = "Ввод"
             LabelBothHeadText = "Контролируемые параметры"
             LabelBothBodyText = "Проведите замер усилия нажатия (начального) каждого контакта и внесите эти данные"
-            Test.RreadStop()
             U = 0
             Test.A1using = False
             TPA.DialogForms.WaitFormStop()
@@ -527,7 +520,6 @@
             ButtonBothText = "Ввод"
             LabelBothHeadText = "Контролируемые параметры"
             LabelBothBodyText = "Проведите замер усилия нажатия (конечного) каждого контакта и внесите эти данные"
-            Test.RreadStop()
             U = 0
             Test.A1using = False
             TPA.DialogForms.WaitFormStop()
@@ -538,7 +530,6 @@
 
     Private Sub writeСостояние()
         If Test.device.KontACount > 0 Or Test.device.KontBCount > 0 Or Test.device.KontCCount > 0 Then
-            RreadStop()
             TPA.DeviseInspection.stopInspection()
             Dim all(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As Boolean
             Dim head(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As String
@@ -572,7 +563,6 @@
 
     Private Sub writeРаствор()
         If Test.device.KontACount > 0 Or Test.device.KontBCount > 0 Or Test.device.KontCCount > 0 Then
-            RreadStop()
             TPA.DeviseInspection.stopInspection()
             Dim all(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As Double
             Dim head(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As String
@@ -608,7 +598,6 @@
 
     Private Sub writeПровал()
         If Test.device.KontACount > 0 Or Test.device.KontBCount > 0 Or Test.device.KontCCount > 0 Then
-            RreadStop()
             TPA.DeviseInspection.stopInspection()
             Dim all(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As Double
             Dim head(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As String
@@ -644,7 +633,6 @@
 
     Private Sub writeНач()
         If Test.device.KontACount > 0 Or Test.device.KontBCount > 0 Or Test.device.KontCCount > 0 Then
-            RreadStop()
             TPA.DeviseInspection.stopInspection()
             Dim all(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As Double
             Dim head(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As String
@@ -680,7 +668,6 @@
 
     Private Sub writeКон()
         If Test.device.KontACount > 0 Or Test.device.KontBCount > 0 Or Test.device.KontCCount > 0 Then
-            RreadStop()
             TPA.DeviseInspection.stopInspection()
             Dim all(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As Double
             Dim head(Test.device.KontACount + Test.device.KontBCount + Test.device.KontCCount - 1) As String
@@ -875,6 +862,14 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub OperationResult()
+        TPA.DialogForms.WaitFormStart()
+        ButtonBothVisible = False
+        LabelBothHeadText = ""
+        LabelBothBodyText = ""
+        U = 0
+        Test.A1using = False
+        Report.Save(Report.readNum, Test.device, Test.user, Test.master, Test.timeStart)
+        newReport = False
         Dim _cc As Integer = 0
         If Test.device.РабочиеПарамерты.I Then _cc += 1
         If Test.device.РабочиеПарамерты.work Then _cc += 1
@@ -886,14 +881,6 @@
         If Test.device.РабочиеПарамерты.РастворКонтактов Then _cc += 1
         If Test.device.РабочиеПарамерты.ПровалКонтактов Then _cc += 1
         If _cc > 1 Then
-            TPA.DialogForms.WaitFormStart()
-            ButtonBothVisible = False
-            LabelBothHeadText = ""
-            LabelBothBodyText = ""
-            U = 0
-            Test.A1using = False
-            Report.Save(Report.readNum, Test.device, Test.user, Test.master, Test.timeStart)
-            newReport = False
             Report.Show(Report.readNum)
         End If
         nextStep = Steps.Sleep
@@ -993,6 +980,7 @@
         Test.device = New Device()
         firstStart = True
         newReport = True
+        LabelBothBodyText = "Для начала испытания нажмите 'Старт'"
         Threading.Thread.Sleep(1000)
         TPA.Log.Print(TPA.Rank.OK, "Выполнена генерация нового испытания")
         TimerControl.Enabled = tce
@@ -1032,17 +1020,15 @@
         ButtonR.Color = Color.LimeGreen
         ButtonR.Update()
         Test.RreadStart()
-        Dim stoped As DateTime = Now.AddMilliseconds(10000)
-        Do While (Test.R = 0 Or Test.R = 50000) And stoped > Now
+        Dim stoped As DateTime = Now.AddMilliseconds(2000)
+        Do While (Test.R < 0) And stoped > Now
+            Test.RreadStart()
             Threading.Thread.Sleep(50)
         Loop
         ButtonR.Color = Color.Gainsboro
-        Test.RreadStop()
         TimerControl.Enabled = True
         ResetElements()
     End Sub
-
-
 
     Private Sub ButtonImax1A_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonImax1A.Click
         TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [1 A]")
@@ -1075,7 +1061,7 @@
                 Test.Urec = u
                 TPA.Log.Print(TPA.Rank.OK, "Установлено U = " & u)
             Catch ex As Exception
-                TPA.Log.Print(TPA.Rank.OK, "Установка точного U не утановлена")
+                TPA.Log.Print(TPA.Rank.OK, "Установка точного U не выполнена")
             End Try
         End If
     End Sub
