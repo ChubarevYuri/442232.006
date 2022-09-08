@@ -66,10 +66,14 @@
                                       New TPA.Line("раб.", _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(If(device.UworkMaxMinStr.Length > 0, If(device.Uwork.Control, "раб.", "не раб."), ""), _
+                                      New TPA.Line(If(device.endW, _
+                                                      If(device.Uwork.Control, "раб.", "не раб."), _
+                                                      "X"), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(If(device.UworkMaxMinStr.Length > 0, boolToStr(device.Uwork.Control), ""), _
+                                      New TPA.Line(If(device.endW, _
+                                                      boolToStr(device.Uwork.Control), _
+                                                      "X"), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None)})
             If device.РабочиеПарамерты.I Or device.РабочиеПарамерты.work Then _
@@ -82,10 +86,14 @@
                                       New TPA.Line(device.UiMaxMinStr, _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(device.UiFactStr, _
+                                      New TPA.Line(If(device.Ui.Fact > 0, device.UiFactStr, "X"), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(If(device.UiMaxMinStr.Length > 0, boolToStr(device.Ui.Control), ""), _
+                                      New TPA.Line(If(device.UiMaxMinStr.Length > 0, _
+                                                      If(device.Ui.Fact > 0, _
+                                                         boolToStr(device.Ui.Control), _
+                                                         "X"), _
+                                                      ""), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None)})
             If device.РабочиеПарамерты.I Or device.РабочиеПарамерты.work Then _
@@ -98,10 +106,14 @@
                                       New TPA.Line(device.IMaxMinStr, _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(device.IiFactStr, _
+                                      New TPA.Line(If(device.Ii.Fact > 0, device.IiFactStr, "X"), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(If(device.IMaxMinStr.Length > 0, boolToStr(device.Ii.Control), ""), _
+                                      New TPA.Line(If(device.IMaxMinStr.Length > 0, _
+                                                   If(device.Ii.Fact > 0, _
+                                                      boolToStr(device.Ii.Control), _
+                                                      "X"), _
+                                                   ""), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None)})
             If device.РабочиеПарамерты.O Then _
@@ -114,10 +126,14 @@
                                       New TPA.Line(device.UoMaxMinStr, _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(device.UoFactStr, _
+                                      New TPA.Line(If(device.Uo.Fact > 0, device.UoFactStr, "X"), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(If(device.UoMaxMinStr.Length > 0, boolToStr(device.Uo.Control), ""), _
+                                      New TPA.Line(If(device.UoMaxMinStr.Length > 0, _
+                                                      If(device.Uo.Fact > 0, _
+                                                         boolToStr(device.Uo.Control), _
+                                                         "X"), _
+                                                      ""), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None)})
             If device.РабочиеПарамерты.O Then _
@@ -130,10 +146,14 @@
                                       New TPA.Line(device.IMaxMinStr, _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(device.IoFactStr, _
+                                      New TPA.Line(If(device.Io.Fact > 0, device.IoFactStr, "X"), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None), _
-                                      New TPA.Line(If(device.IMaxMinStr.Length > 0, boolToStr(device.Io.Control), ""), _
+                                      New TPA.Line(If(device.IMaxMinStr.Length > 0, _
+                                                   If(device.Io.Fact > 0, _
+                                                      boolToStr(device.Io.Control), _
+                                                      "X"), _
+                                                   ""), _
                                                    TPA.Line.Align.Center, _
                                                    TPA.Line.StyleLine.None)})
             If device.РабочиеПарамерты.R Then _
@@ -146,10 +166,14 @@
                                           New TPA.Line(device.RMaxMinStr, _
                                                        TPA.Line.Align.Center, _
                                                        TPA.Line.StyleLine.None), _
-                                          New TPA.Line(device.RFactStr, _
+                                          New TPA.Line(If(device.R.Fact > 0, device.RFactStr, "X"), _
                                                        TPA.Line.Align.Center, _
                                                        TPA.Line.StyleLine.None), _
-                                          New TPA.Line(If(device.RMaxMinStr.Length > 0, boolToStr(device.R.Control), ""), _
+                                          New TPA.Line(If(device.RMaxMinStr.Length > 0, _
+                                                          If(device.R.Fact > 0, _
+                                                             boolToStr(device.R.Control), _
+                                                             "X"), _
+                                                          ""), _
                                                        TPA.Line.Align.Center, _
                                                        TPA.Line.StyleLine.None)})
             _report.Table(New TPA.Line() {New TPA.Line("Параметр", _
@@ -189,7 +213,7 @@
                                       If(device.РабочиеПарамерты.НажатиеНач, 1, 0) + _
                                       If(device.РабочиеПарамерты.НажатиеКон, 1, 0) + _
                                       If(device.РабочиеПарамерты.Состояние, 1, 0)
-                _report.ReserveLines(rows)
+                _report.ReserveLines(rows + 1)
                 _report.Line(New TPA.Line(tableNum & ". Контакт главной цепи замыкающий № " & (i + 1)))
                 table = New Collection
                 If device.РабочиеПарамерты.Состояние Then
@@ -202,10 +226,16 @@
                                               New TPA.Line("норма", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.СостояниеA(i), "норма", "не норма"), _
+                                              New TPA.Line(If(device.endСост, _
+                                                              If(device.СостояниеA(i), _
+                                                                 "норма", _
+                                                                 "не норма"), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(boolToStr(device.СостояниеA(i)), _
+                                              New TPA.Line(If(device.endСост, _
+                                                              boolToStr(device.СостояниеA(i)), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -219,10 +249,16 @@
                                               New TPA.Line(device.РастворКонтактаAstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.РастворКонтактаAFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.РастворКонтактаAFact(i) > 0, _
+                                                              device.РастворКонтактаAFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.РастворКонтактаAMax > 0, boolToStr(device.ControlРастворКонтактаA(i)), ""), _
+                                              New TPA.Line(If(device.РастворКонтактаAstr.Length > 0, _
+                                                              If(device.РастворКонтактаAFact(i) > 0, _
+                                                                 boolToStr(device.ControlРастворКонтактаA(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -236,10 +272,16 @@
                                               New TPA.Line(device.ПровалКонтактаAstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.ПровалКонтактаAFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.ПровалКонтактаAFact(i) > 0, _
+                                                              device.ПровалКонтактаAFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.ПровалКонтактаAMax > 0, boolToStr(device.ControlПровалКонтактаA(i)), ""), _
+                                              New TPA.Line(If(device.ПровалКонтактаAstr.Length > 0, _
+                                                              If(device.ПровалКонтактаAFact(i) > 0, _
+                                                                 boolToStr(device.ControlПровалКонтактаA(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -253,10 +295,16 @@
                                               New TPA.Line(device.НажатиеНачAstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.НажатиеНачAFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.НажатиеНачAFact(i) > 0, _
+                                                              device.НажатиеНачAFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.НажатиеНачAMax > 0, boolToStr(device.ControlНажатиеНачA(i)), ""), _
+                                              New TPA.Line(If(device.НажатиеНачAstr.Length > 0, _
+                                                              If(device.НажатиеНачAFact(i) > 0, _
+                                                                 boolToStr(device.ControlНажатиеНачA(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -270,10 +318,16 @@
                                               New TPA.Line(device.НажатиеКонAstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.НажатиеКонAFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.НажатиеКонAFact(i) > 0, _
+                                                              device.НажатиеКонAFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.НажатиеКонAMax > 0, boolToStr(device.ControlНажатиеКонA(i)), ""), _
+                                              New TPA.Line(If(device.НажатиеКонAstr.Length > 0, _
+                                                              If(device.НажатиеКонAFact(i) > 0, _
+                                                                 boolToStr(device.ControlНажатиеКонA(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -315,7 +369,7 @@
                                       If(device.РабочиеПарамерты.НажатиеНач, 1, 0) + _
                                       If(device.РабочиеПарамерты.НажатиеКон, 1, 0) + _
                                       If(device.РабочиеПарамерты.Состояние, 1, 0)
-                _report.ReserveLines(rows)
+                _report.ReserveLines(rows + 1)
                 _report.Line(New TPA.Line(tableNum & ". Контакт главной цепи размыкающий № " & (i + 1)))
                 table = New Collection
                 If device.РабочиеПарамерты.Состояние Then
@@ -328,10 +382,16 @@
                                               New TPA.Line("норма", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.СостояниеB(i), "норма", "не норма"), _
+                                              New TPA.Line(If(device.endСост, _
+                                                              If(device.СостояниеB(i), _
+                                                                 "норма", _
+                                                                 "не норма"), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(boolToStr(device.СостояниеB(i)), _
+                                              New TPA.Line(If(device.endСост, _
+                                                              boolToStr(device.СостояниеB(i)), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -345,10 +405,16 @@
                                               New TPA.Line(device.РастворКонтактаBstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.РастворКонтактаBFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.РастворКонтактаBFact(i) > 0, _
+                                                              device.РастворКонтактаBFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.РастворКонтактаBMax > 0, boolToStr(device.ControlРастворКонтактаB(i)), ""), _
+                                              New TPA.Line(If(device.РастворКонтактаBstr.Length > 0, _
+                                                              If(device.РастворКонтактаBFact(i) > 0, _
+                                                                 boolToStr(device.ControlРастворКонтактаB(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -362,10 +428,16 @@
                                               New TPA.Line(device.ПровалКонтактаBstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.ПровалКонтактаBFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.ПровалКонтактаBFact(i) > 0, _
+                                                              device.ПровалКонтактаBFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.ПровалКонтактаBMax > 0, boolToStr(device.ControlПровалКонтактаB(i)), ""), _
+                                              New TPA.Line(If(device.ПровалКонтактаBstr.Length > 0, _
+                                                              If(device.ПровалКонтактаBFact(i) > 0, _
+                                                                 boolToStr(device.ControlПровалКонтактаB(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -379,10 +451,16 @@
                                               New TPA.Line(device.НажатиеНачBstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.НажатиеНачBFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.НажатиеНачBFact(i) > 0, _
+                                                              device.НажатиеНачBFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.НажатиеНачBMax > 0, boolToStr(device.ControlНажатиеНачB(i)), ""), _
+                                              New TPA.Line(If(device.НажатиеНачBstr.Length > 0, _
+                                                              If(device.НажатиеНачBFact(i) > 0, _
+                                                                 boolToStr(device.ControlНажатиеНачB(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -396,10 +474,16 @@
                                               New TPA.Line(device.НажатиеКонBstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.НажатиеКонBFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.НажатиеКонBFact(i) > 0, _
+                                                              device.НажатиеКонBFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.НажатиеКонBMax > 0, boolToStr(device.ControlНажатиеКонB(i)), ""), _
+                                              New TPA.Line(If(device.НажатиеКонBstr.Length > 0, _
+                                                              If(device.НажатиеКонBFact(i) > 0, _
+                                                                 boolToStr(device.ControlНажатиеКонB(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -441,7 +525,7 @@
                                       If(device.РабочиеПарамерты.НажатиеНач, 1, 0) + _
                                       If(device.РабочиеПарамерты.НажатиеКон, 1, 0) + _
                                       If(device.РабочиеПарамерты.Состояние, 1, 0)
-                _report.ReserveLines(rows)
+                _report.ReserveLines(rows + 1)
                 _report.Line(New TPA.Line(tableNum & ". Контакт вспомогательной цепи № " & (i + 1)))
                 table = New Collection
                 If device.РабочиеПарамерты.Состояние Then
@@ -454,10 +538,16 @@
                                               New TPA.Line("норма", _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.СостояниеC(i), "норма", "не норма"), _
+                                              New TPA.Line(If(device.endСост, _
+                                                              If(device.СостояниеC(i), _
+                                                                 "норма", _
+                                                                 "не норма"), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(boolToStr(device.СостояниеC(i)), _
+                                              New TPA.Line(If(device.endСост, _
+                                                              boolToStr(device.СостояниеC(i)), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -471,10 +561,16 @@
                                               New TPA.Line(device.РастворКонтактаCstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.РастворКонтактаCFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.РастворКонтактаCFact(i) > 0, _
+                                                              device.РастворКонтактаCFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.РастворКонтактаCMax > 0, boolToStr(device.ControlРастворКонтактаC(i)), ""), _
+                                              New TPA.Line(If(device.РастворКонтактаCstr.Length > 0, _
+                                                              If(device.РастворКонтактаCFact(i) > 0, _
+                                                                 boolToStr(device.ControlРастворКонтактаC(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -488,10 +584,16 @@
                                               New TPA.Line(device.ПровалКонтактаCstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.ПровалКонтактаCFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.ПровалКонтактаCFact(i) > 0, _
+                                                              device.ПровалКонтактаCFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.ПровалКонтактаCMax > 0, boolToStr(device.ControlПровалКонтактаC(i)), ""), _
+                                              New TPA.Line(If(device.ПровалКонтактаCstr.Length > 0, _
+                                                              If(device.ПровалКонтактаCFact(i) > 0, _
+                                                                 boolToStr(device.ControlПровалКонтактаC(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -505,10 +607,16 @@
                                               New TPA.Line(device.НажатиеНачCstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.НажатиеНачCFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.НажатиеНачCFact(i) > 0, _
+                                                              device.НажатиеНачCFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.НажатиеНачCMax > 0, boolToStr(device.ControlНажатиеНачC(i)), ""), _
+                                              New TPA.Line(If(device.НажатиеНачCstr.Length > 0, _
+                                                              If(device.НажатиеНачCFact(i) > 0, _
+                                                                 boolToStr(device.ControlНажатиеНачC(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -522,10 +630,16 @@
                                               New TPA.Line(device.НажатиеКонCstr, _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(device.НажатиеКонCFact(i).ToString(Base.doubleformat), _
+                                              New TPA.Line(If(device.НажатиеКонCFact(i) > 0, _
+                                                              device.НажатиеКонCFact(i).ToString(Base.doubleformat), _
+                                                              "X"), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None), _
-                                              New TPA.Line(If(device.НажатиеКонCMax > 0, boolToStr(device.ControlНажатиеКонC(i)), ""), _
+                                              New TPA.Line(If(device.НажатиеКонCstr.Length > 0, _
+                                                              If(device.НажатиеКонCFact(i) > 0, _
+                                                                 boolToStr(device.ControlНажатиеКонC(i)), _
+                                                                 "X"), _
+                                                              ""), _
                                                            TPA.Line.Align.Center, _
                                                            TPA.Line.StyleLine.None)})
                 End If
@@ -555,7 +669,7 @@
         Next
         'подвал
         _report.Line("")
-        _report.ReserveLines(7)
+        _report.ReserveLines(8)
         _report.Line(New TPA.Line() {New TPA.Line("Заключение: ", _
                                                   TPA.Line.Align.Left, _
                                                   TPA.Line.StyleLine.None), _
@@ -576,7 +690,7 @@
                                        New TPA.Line("", _
                                            TPA.Line.Align.Center, _
                                            TPA.Line.StyleLine.FillUnderline), _
-                                       New TPA.Line("/ " & user, _
+                                       New TPA.Line("/ " & If(user.Length > 18, user.Substring(0, 18), user), _
                                                     TPA.Line.Align.Left, _
                                                     TPA.Line.StyleLine.FillUnderline), _
                                        New TPA.Line("/", _
@@ -590,7 +704,7 @@
                                        New TPA.Line("", _
                                            TPA.Line.Align.Center, _
                                            TPA.Line.StyleLine.FillUnderline), _
-                                       New TPA.Line("/ " & master, _
+                                       New TPA.Line("/ " & If(master.Length > 18, master.Substring(0, 18), master), _
                                                     TPA.Line.Align.Left, _
                                                     TPA.Line.StyleLine.FillUnderline), _
                                        New TPA.Line("/", _
@@ -692,7 +806,10 @@
             dict.Add("НажатиеНачCFact(" & i & ")", device.НажатиеНачCFact(i))
             dict.Add("НажатиеКонCFact(" & i & ")", device.НажатиеКонCFact(i))
         Next
-        Base.reports.Write(num, dict)
+        dict.Add("endW", device.endW)
+        dict.Add("endСост", device.endСост)
+        If Base.reports.Write(num, dict) <> 0 Then TPA.Log.Print(TPA.Rank.EXCEPT, _
+                                                                "Протокол № " & num & " не сохранен")
     End Sub
 
 #Region "Show"
@@ -1239,6 +1356,20 @@
                     TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
                 End Try
             Next
+            key = "endW"
+            Try
+                device.endW = Convert.ToBoolean(dict(key))
+            Catch ex As Exception
+                device.endW = False
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
+            key = "endСост"
+            Try
+                device.endСост = Convert.ToBoolean(dict(key))
+            Catch ex As Exception
+                device.endСост = False
+                TPA.Log.Print(TPA.Rank.WARNING, "В протоколе №" & num & " не прочитано поле [" & key & "]")
+            End Try
             Create(num, device, user, master, timeStart)
             TPA.WaitFormStop()
             TPA.DialogForms.Report(_report, _

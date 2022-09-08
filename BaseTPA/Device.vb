@@ -1538,6 +1538,8 @@
             Next
         End Get
     End Property
+    Public endW As Boolean = False
+    Public endСост As Boolean = False
     ''' <summary>
     ''' Сохранение аппарата в файл "Base.devices"
     ''' </summary>
@@ -1866,7 +1868,7 @@ Public Class Контакт
     Private _ПровалКонтакта As Double = 0
     Private _НажатиеНач As Double = 0
     Private _НажатиеКон As Double = 0
-    Private _Состояние As Boolean = True
+    Private _Состояние As Boolean = Nothing
     Public Property РастворКонтакта() As Double
         Get
             Return If(_РастворКонтакта > 0, _РастворКонтакта, 0)

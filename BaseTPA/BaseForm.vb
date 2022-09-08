@@ -70,7 +70,6 @@
         Test.U = 0
         Test.Urec = 0
         Test.A1using = False
-        ButtonReport.Enabled = True
         ButtonService.Enabled = True
         ButtonNew.Enabled = True
         ButtonUup.Enabled = True
@@ -79,6 +78,7 @@
         ButtonImax10A.Enabled = True
         ButtonR.Enabled = True
         ButtonBothText = "Старт"
+        LabelUnom.Text = ""
         ButtonBothVisible = True
         LabelBothHeadText = "Стенд остановлен"
         LabelBothBodyText = If(Not firstStart, "Для запуска нового испытания нажните 'Новое'. ", "") & "Для начала испытания нажмите 'Старт'"
@@ -90,7 +90,6 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub operationStart()
-        ButtonReport.Enabled = False
         ButtonService.Enabled = False
         ButtonNew.Enabled = False
         ButtonUup.Enabled = False
@@ -150,6 +149,13 @@
         End Using
         TPA.DialogForms.WaitFormStart()
         uifinish = False
+        Test.device.endW = False
+        Test.device.endСост = False
+        LabelUnom.Text = If(Test.device.U > 0, _
+                                  "U ном = " & Test.device.U.ToString("#0.0"), _
+                                  If(Test.device.Uwork.Max < Double.MaxValue, _
+                                     "U ном < " & Test.device.Uwork.Max.ToString("#0.00"), _
+                                     ""))
         nextStep = Steps.RWait
     End Sub
 
@@ -229,21 +235,19 @@
         If Test.IOnow = нормальноЗамкнутыйКонтакт Then
             Test.device.Ui.Fact = Double.MaxValue
             Test.device.Ii.Fact = Double.MaxValue
-            ButtonBothVisible = True
             LabelBothHeadText = "Ошибка включения"
             LabelBothBodyText = "Аппарат не включился при U = " & Test.U.ToString("#0.0")
-            TPA.DialogForms.WaitFormStop()
         Else
             Test.device.Ui.Fact = Test.U
             Test.device.Ii.Fact = autoIcontrol()
-            ButtonBothVisible = True
             LabelBothHeadText = "Параметры включения"
             LabelBothBodyText = "Напряжение включения " & Test.device.UiFactStr & " " & Test.device.Uiei & " при допустимом " & Test.device.UiMaxMinStr & " " & Test.device.Uiei & _
                                 Chr(13) & Chr(10) & _
                                 "Ток включения " & Test.device.IiFactStr & " " & Test.device.Iei & " при допустимом " & Test.device.IMaxMinStr & " " & Test.device.Iei
-
-            TPA.DialogForms.WaitFormStop()
         End If
+        ButtonBothVisible = True
+        Test.U = 0
+        TPA.DialogForms.WaitFormStop()
     End Sub
 
     ''' <summary>
@@ -275,20 +279,18 @@
                 Test.device.Uwork.Fact = Test.device.Uwork.Max
                 Test.device.Ui.Fact = Test.U
                 Test.device.Ii.Fact = Test.I
-                ButtonBothVisible = True
-                LabelBothHeadText = "Контроль срабатывания при U min"
                 LabelBothBodyText = "Включение в норме"
-                TPA.DialogForms.WaitFormStop()
             Else
                 Test.device.Uwork.Fact = If(Test.device.Uwork.Max < Double.MaxValue, Double.MaxValue, Double.MinValue)
                 Test.device.Ui.Fact = 0
                 Test.device.Ii.Fact = 0
-                ButtonBothVisible = True
-                LabelBothHeadText = "Контроль срабатывания при U min"
                 LabelBothBodyText = "Включения не произошло"
-                TPA.DialogForms.WaitFormStop()
             End If
+            Test.device.endW = True
+            ButtonBothVisible = True
+            LabelBothHeadText = "Контроль срабатывания при U min"
             U = 0
+            TPA.DialogForms.WaitFormStop()
         Else
             nextStep = Steps.UIcontrolI
         End If
@@ -348,31 +350,19 @@
             Test.device.Uo.Fact = Double.MaxValue
             Test.device.Io.Fact = Double.MaxValue
             Test.device.Ii.Fact = 0
-            ButtonBothVisible = True
             LabelBothHeadText = "Ошибка отключения"
             LabelBothBodyText = "Аппарат не отключился при U = " & Test.U.ToString("#0.0")
-            TPA.DialogForms.WaitFormStop()
-            'TPA.DialogForms.Message("Аппарат не отключился при U = " & Test.U.ToString("#0.0"), _
-            '                        "Ошибка отключения", _
-            '                        TPA.DialogForms.MsgType.warning)
         Else
             Test.device.Uo.Fact = Test.U
             Test.device.Io.Fact = autoIcontrol()
-            'Test.device.Ii.Fact = 0
-            ButtonBothVisible = True
             LabelBothHeadText = "Параметры отключения"
             LabelBothBodyText = "Напряжение отключения " & Test.device.UoFactStr & " " & Test.device.Uoei & " при допустимом " & Test.device.UoMaxMinStr & " " & Test.device.Uoei & _
                                     Chr(13) & Chr(10) & _
                                     "Ток отключения " & Test.device.IoFactStr & " " & Test.device.Iei & " при допустимом " & Test.device.IMaxMinStr & " " & Test.device.Iei
-            TPA.DialogForms.WaitFormStop()
-            'TPA.DialogForms.Message("Напряжение отключения " & Test.device.UoFactStr & " " & Test.device.Uoei & " при допустимом " & Test.device.UoMaxMinStr & " " & Test.device.Uoei & _
-            '                        Chr(13) & Chr(10) & _
-            '                        "Ток отключения " & Test.device.IoFactStr & " " & Test.device.Iei & " при допустимом " & Test.device.IMaxMinStr & " " & Test.device.Iei, _
-            '                        "Параметры отключения", _
-            '                        If(Test.device.Io.Control And Test.device.Uo.Control, _
-            '                           TPA.DialogForms.MsgType.message, _
-            '                           TPA.DialogForms.MsgType.warning))
         End If
+        Test.U = 0
+        ButtonBothVisible = True
+        TPA.DialogForms.WaitFormStop()
     End Sub
 
     Private Function autoIcontrol() As Double
@@ -443,6 +433,7 @@
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub OperationСостояние()
+        LabelUnom.Text = ""
         If Test.device.РабочиеПарамерты.Состояние And (Test.device.KontACount > 0 Or Test.device.KontBCount > 0 Or Test.device.KontCCount > 0) Then
             ButtonBothVisible = True
             ButtonBothText = "Ввод"
@@ -556,6 +547,7 @@
                     Test.device.СостояниеC(i - Test.device.KontACount - Test.device.KontBCount) = all(i)
                 End If
             Next
+            Test.device.endСост = True
             TPA.DeviseInspection.startInspection()
         End If
         nextStep = Steps.Раствор
@@ -920,6 +912,7 @@
                 Operation = Steps.Sleep
             End If
         End If
+        ButtonReport.Enabled = ButtonBoth.Visible
         ButtonImax1A.Color = If(Test.A1using, Color.LimeGreen, Color.Gainsboro)
         ButtonImax10A.Color = If(Test.A1using, Color.Gainsboro, Color.LimeGreen)
         ButtonBoth.MyText = ButtonBothText

@@ -48,6 +48,7 @@ Partial Public Class BaseForm
         Me.DeviceValueU = New TPA.DeviceValue
         Me.LabelHead = New System.Windows.Forms.Label
         Me.TimerControl = New System.Windows.Forms.Timer
+        Me.LabelUnom = New System.Windows.Forms.Label
         Me.PanelBoth.SuspendLayout()
         Me.PanelBothHead.SuspendLayout()
         Me.PanelControl.SuspendLayout()
@@ -194,6 +195,7 @@ Partial Public Class BaseForm
         'PanelBody
         '
         Me.PanelBody.BackColor = System.Drawing.SystemColors.ControlLight
+        Me.PanelBody.Controls.Add(Me.LabelUnom)
         Me.PanelBody.Controls.Add(Me.Panel1)
         Me.PanelBody.Controls.Add(Me.PanelButtons)
         Me.PanelBody.Controls.Add(Me.DeviceValueR)
@@ -385,6 +387,15 @@ Partial Public Class BaseForm
         Me.TimerControl.Enabled = True
         Me.TimerControl.Interval = 250
         '
+        'LabelUnom
+        '
+        Me.LabelUnom.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.LabelUnom.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
+        Me.LabelUnom.Location = New System.Drawing.Point(30, 156)
+        Me.LabelUnom.Name = "LabelUnom"
+        Me.LabelUnom.Size = New System.Drawing.Size(155, 29)
+        Me.LabelUnom.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
         'BaseForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -438,5 +449,6 @@ Partial Public Class BaseForm
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents TimerPanel1 As TPA.TimerPanel
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
+    Friend WithEvents LabelUnom As System.Windows.Forms.Label
 
 End Class

@@ -36,7 +36,7 @@
         LabelBУсилиеНачMax.Text = If(dev.НажатиеНачBMax = Double.MaxValue, 0, dev.НажатиеНачBMax)
         LabelBУсилиеКонMin.Text = If(dev.НажатиеКонBMin = Double.MinValue, 0, dev.НажатиеКонBMin)
         LabelBУсилиеКонMax.Text = If(dev.НажатиеКонBMax = Double.MaxValue, 0, dev.НажатиеКонBMax)
-        LabelCCount.Text = dev.KontBCount
+        LabelCCount.Text = dev.KontCCount
         LabelCРастворMin.Text = If(dev.РастворКонтактаCMin = Double.MinValue, 0, dev.РастворКонтактаCMin)
         LabelCРастворMax.Text = If(dev.РастворКонтактаCMax = Double.MaxValue, 0, dev.РастворКонтактаCMax)
         LabelCПровалMin.Text = If(dev.ПровалКонтактаCMin = Double.MinValue, 0, dev.ПровалКонтактаCMin)
@@ -65,15 +65,15 @@
             TPA.DialogForms.Message("Невозможно создать устройство без названия.", "", TPA.DialogForms.MsgType.warning)
         ElseIf devices.ObjectInFile(LabelModel.Text) And LabelModel.Text <> resilt.Name Then
             TPA.DialogForms.Message("Устройтво уже есть в базе.", "", TPA.DialogForms.MsgType.warning)
-        ElseIf CheckBoxR.Checked = False And _
-               CheckBoxR.Checked = False And _
-               CheckBoxR.Checked = False And _
-               CheckBoxR.Checked = False And _
-               CheckBoxR.Checked = False And _
-               CheckBoxR.Checked = False And _
-               CheckBoxR.Checked = False And _
-               CheckBoxR.Checked = False And _
-               CheckBoxR.Checked = False Then
+        ElseIf Not CheckBoxR.Checked And _
+               Not CheckBoxI.Checked And _
+               Not CheckBoxO.Checked And _
+               Not CheckBoxW.Checked And _
+               Not CheckBoxКон.Checked And _
+               Not CheckBoxНач.Checked And _
+               Not CheckBoxПровал.Checked And _
+               Not CheckBoxРаствор.Checked And _
+               Not CheckBoxСостояние.Checked Then
             TPA.DialogForms.Message("Выберите хотя бы 1 осуществляемую проверку.", "", TPA.DialogForms.MsgType.warning)
         Else
             TPA.DialogForms.WaitFormStart()
