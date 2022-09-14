@@ -893,6 +893,9 @@
             DeviceValueI.Head = "    I, мА"
 
             DeviceValueI.Value = If(Test.I > 0, (Test.I * 1000).ToString("F0"), "---")
+        ElseIf Test.I < 10 Then
+            DeviceValueI.Head = "    I, A"
+            DeviceValueI.Value = Test.I.ToString("F2")
         Else
             DeviceValueI.Head = "    I, A"
             DeviceValueI.Value = Test.I.ToString("F1")
@@ -931,8 +934,9 @@
         newReport = True
         TPA.TaskBarHide()
         Test.start()
-        Threading.Thread.Sleep(2000)
+        Threading.Thread.Sleep(1000)
         OperationSleep()
+        Threading.Thread.Sleep(1000)
         ResetElements()
         TPA.DialogForms.WaitFormStop()
     End Sub
@@ -1002,6 +1006,14 @@
 
     Private Sub TimerControl_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TimerControl.Tick
         ResetElements()
+        If _uUpStart Then
+            Test.UrecTop(True)
+            If _uUpStop Then _uUpStart = False
+        End If
+        If _uDownStart Then
+            Test.UrecBoth(True)
+            If _uDownStop Then _uDownStart = False
+        End If
     End Sub
 
     Private Sub ButtonR_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonR.Click
@@ -1033,12 +1045,12 @@
         Test.A1using = False
     End Sub
 
-    Private Sub ButtonUdown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonUdown.Click
+    Private Sub ButtonUdown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) 'Handles ButtonUdown.Click
         TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [U down]")
         Test.UrecBoth(True)
     End Sub
 
-    Private Sub ButtonUup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ButtonUup.Click
+    Private Sub ButtonUup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) 'Handles ButtonUup.Click
         TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [U up]")
         Test.UrecTop(True)
     End Sub
@@ -1057,5 +1069,31 @@
                 TPA.Log.Print(TPA.Rank.OK, "Установка точного U не выполнена")
             End Try
         End If
+    End Sub
+
+    Private _uUpStart As Boolean = False
+    Private _uUpStop As Boolean = True
+    Private Sub ButtonUup_MouseDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ButtonUup.MouseDown
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [U up]")
+        _uUpStart = True
+        _uUpStop = False
+    End Sub
+
+    Private Sub ButtonUup_MouseUp(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ButtonUup.MouseUp
+        TPA.Log.Print(TPA.Rank.OK, "Отжата кнопка [U up]")
+        _uUpStop = True
+    End Sub
+
+    Private _uDownStart As Boolean = False
+    Private _uDownStop As Boolean = True
+    Private Sub ButtonUdown_MouseDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ButtonUdown.MouseDown
+        TPA.Log.Print(TPA.Rank.OK, "Нажата кнопка [U down]")
+        _uDownStart = True
+        _uDownStop = False
+    End Sub
+
+    Private Sub ButtonUdown_MouseUp(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ButtonUdown.MouseUp
+        TPA.Log.Print(TPA.Rank.OK, "Отжата кнопка [U down]")
+        _uDownStop = True
     End Sub
 End Class

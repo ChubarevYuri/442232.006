@@ -33,6 +33,7 @@ Partial Public Class BaseForm
         Me.ButtonNew = New TPA.ButtonNew
         Me.Label2 = New System.Windows.Forms.Label
         Me.PanelBody = New System.Windows.Forms.Panel
+        Me.LabelUnom = New System.Windows.Forms.Label
         Me.Panel1 = New System.Windows.Forms.Panel
         Me.PanelButtons = New System.Windows.Forms.Panel
         Me.ButtonUdown = New TPA.ButtonNew
@@ -48,7 +49,9 @@ Partial Public Class BaseForm
         Me.DeviceValueU = New TPA.DeviceValue
         Me.LabelHead = New System.Windows.Forms.Label
         Me.TimerControl = New System.Windows.Forms.Timer
-        Me.LabelUnom = New System.Windows.Forms.Label
+        Me.Panel2 = New System.Windows.Forms.Panel
+        Me.Panel3 = New System.Windows.Forms.Panel
+        Me.Panel4 = New System.Windows.Forms.Panel
         Me.PanelBoth.SuspendLayout()
         Me.PanelBothHead.SuspendLayout()
         Me.PanelControl.SuspendLayout()
@@ -131,8 +134,11 @@ Partial Public Class BaseForm
         '
         Me.PanelControl.BackColor = System.Drawing.SystemColors.ControlLight
         Me.PanelControl.Controls.Add(Me.ButtonStop)
+        Me.PanelControl.Controls.Add(Me.Panel2)
         Me.PanelControl.Controls.Add(Me.ButtonService)
+        Me.PanelControl.Controls.Add(Me.Panel3)
         Me.PanelControl.Controls.Add(Me.ButtonReport)
+        Me.PanelControl.Controls.Add(Me.Panel4)
         Me.PanelControl.Controls.Add(Me.ButtonNew)
         Me.PanelControl.Controls.Add(Me.Label2)
         Me.PanelControl.Dock = System.Windows.Forms.DockStyle.Left
@@ -157,7 +163,7 @@ Partial Public Class BaseForm
         Me.ButtonService.Location = New System.Drawing.Point(0, 165)
         Me.ButtonService.MyText = "Сервис"
         Me.ButtonService.Name = "ButtonService"
-        Me.ButtonService.Size = New System.Drawing.Size(125, 70)
+        Me.ButtonService.Size = New System.Drawing.Size(125, 68)
         Me.ButtonService.TabIndex = 13
         '
         'ButtonReport
@@ -167,7 +173,7 @@ Partial Public Class BaseForm
         Me.ButtonReport.Location = New System.Drawing.Point(0, 95)
         Me.ButtonReport.MyText = "Протокол"
         Me.ButtonReport.Name = "ButtonReport"
-        Me.ButtonReport.Size = New System.Drawing.Size(125, 70)
+        Me.ButtonReport.Size = New System.Drawing.Size(125, 68)
         Me.ButtonReport.TabIndex = 12
         '
         'ButtonNew
@@ -177,7 +183,7 @@ Partial Public Class BaseForm
         Me.ButtonNew.Location = New System.Drawing.Point(0, 25)
         Me.ButtonNew.MyText = "Новое"
         Me.ButtonNew.Name = "ButtonNew"
-        Me.ButtonNew.Size = New System.Drawing.Size(125, 70)
+        Me.ButtonNew.Size = New System.Drawing.Size(125, 68)
         Me.ButtonNew.TabIndex = 11
         '
         'Label2
@@ -206,6 +212,15 @@ Partial Public Class BaseForm
         Me.PanelBody.Location = New System.Drawing.Point(125, 0)
         Me.PanelBody.Name = "PanelBody"
         Me.PanelBody.Size = New System.Drawing.Size(673, 310)
+        '
+        'LabelUnom
+        '
+        Me.LabelUnom.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.LabelUnom.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
+        Me.LabelUnom.Location = New System.Drawing.Point(30, 156)
+        Me.LabelUnom.Name = "LabelUnom"
+        Me.LabelUnom.Size = New System.Drawing.Size(155, 29)
+        Me.LabelUnom.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
         'Panel1
         '
@@ -387,14 +402,29 @@ Partial Public Class BaseForm
         Me.TimerControl.Enabled = True
         Me.TimerControl.Interval = 250
         '
-        'LabelUnom
+        'Panel2
         '
-        Me.LabelUnom.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.LabelUnom.Font = New System.Drawing.Font("Arial", 14.0!, System.Drawing.FontStyle.Bold)
-        Me.LabelUnom.Location = New System.Drawing.Point(30, 156)
-        Me.LabelUnom.Name = "LabelUnom"
-        Me.LabelUnom.Size = New System.Drawing.Size(155, 29)
-        Me.LabelUnom.TextAlign = System.Drawing.ContentAlignment.TopRight
+        Me.Panel2.BackColor = System.Drawing.Color.Black
+        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel2.Location = New System.Drawing.Point(0, 233)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(125, 2)
+        '
+        'Panel3
+        '
+        Me.Panel3.BackColor = System.Drawing.Color.Black
+        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel3.Location = New System.Drawing.Point(0, 163)
+        Me.Panel3.Name = "Panel3"
+        Me.Panel3.Size = New System.Drawing.Size(125, 2)
+        '
+        'Panel4
+        '
+        Me.Panel4.BackColor = System.Drawing.Color.Black
+        Me.Panel4.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel4.Location = New System.Drawing.Point(0, 93)
+        Me.Panel4.Name = "Panel4"
+        Me.Panel4.Size = New System.Drawing.Size(125, 2)
         '
         'BaseForm
         '
@@ -450,5 +480,8 @@ Partial Public Class BaseForm
     Friend WithEvents TimerPanel1 As TPA.TimerPanel
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents LabelUnom As System.Windows.Forms.Label
+    Friend WithEvents Panel4 As System.Windows.Forms.Panel
+    Friend WithEvents Panel3 As System.Windows.Forms.Panel
+    Friend WithEvents Panel2 As System.Windows.Forms.Panel
 
 End Class
